@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+.container {
+}
+
+.map-nav {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.home-container {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* display: inline-block; */
+  width: 100vw;
+  padding-bottom: 56.25% /* 16:9 ratio */
+}
+
+/* .home-background {
+  background: url('./assets/img/jace-grandinetti_orig_g2fycc/jace-grandinetti_orig_g2fycc_c_scale,w_200.jpg')
+} */
+
+.home-container img {
+  display: none;
+}
+
+.home-jumbotron {
+  background: none;
+}
+
+.arrdt-picker {
+  display: inline-grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.cell {
+  justify-self: center;
+  align-self: center;
+  border: 1px solid orange;
+}
+
+#map {
+  height: 400px;
+  padding: 0;
+  margin: 0
+}
+
+#autocomplete {
+  width: 300px;
+}
+
+.linkStyle {
+  color: blue
+}
+
+p {
+  color: #444;
+}
+
+* {
+  font-family: 'Abel', sans-serif
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+}

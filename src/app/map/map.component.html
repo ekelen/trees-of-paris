@@ -1,0 +1,26 @@
+<div class="container mt-5 pt-5">
+  <div class="d-flex flex-row align-items-center map-nav pb-4">
+
+    <div class="d-2">
+      <span id="showArrView" (click)="toggleMapMode($event)" [ngClass]="{'linkStyle': !mapService.show_arrdts}">Choose an arrondissement</span> or
+      <span id="showAddressForm" (click)="toggleMapMode($event)" [ngClass]="{'linkStyle': mapService.show_arrdts}">enter your address</span>.
+    </div>
+    <div class="d-2 ml-2" *ngIf="!mapService.show_arrdts">
+      <input id="autocomplete" [(ngModel)]="input" [options]=options (FormatAddress)="getFormattedAddress($event)" angularGooglePlace />
+    </div>
+    <div class="d-2 ml-2 text-danger" *ngIf="errorMessage">
+      {{errorMessage}}
+    </div>
+    <div class="d-2 ml-auto">
+        <a
+        class="btn btn-primary"
+        [routerLink]="['/trees']"
+        [ngClass]="{'disabled': !mapService.user_arrdt && !mapService.user_coordinates, 'btn-secondary': !mapService.user_arrdt && !mapService.user_coordinates}" >
+          Go
+        </a>
+    </div>
+  </div>
+  <div class="container map-container">
+    <div id="map"></div>
+  </div>
+</div>
