@@ -5,7 +5,8 @@
   "scripts": {
     "server": "nodemon server.js",
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.es5.js",
+    "build-server": "babel server.js --out-file server.es5.js",
     "build": "ng build --prod",
     "lint": "ng lint",
     "postinstall": "ng build --aot -prod"
