@@ -5,7 +5,7 @@ var axios = require("axios")
 var moment = require("moment")
 var queryString = require("query-string")
 var ObjectID = mongodb.ObjectID;
-require('dotenv').config({ silent: process.env.NODE_ENV === 'production' })
+require('dotenv').config()
 
 var mongoose = require('mongoose')
 var async = require('async')
