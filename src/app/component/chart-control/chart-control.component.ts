@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { ITree } from '../../model/ITree'
 import { INDVARS } from '../../model/Chart'
 
-import * as H from 'highcharts'
+// import * as H from 'highcharts'
 import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'

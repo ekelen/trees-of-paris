@@ -1,7 +1,7 @@
 import * as _ from "lodash"
 import * as __ from "../util"
 
-import { Options } from "highcharts"
+import { Options } from "angular-highcharts"
 import * as assert from "assert"
 
 import { ITree } from './ITree'
