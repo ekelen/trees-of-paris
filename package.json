@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "server": "nodemon server.js",
-    "ng": "ng",
-    "start": "node server.es5.js",
+    "start-dev": "nodemon server.js",
     "build-server": "babel server.js --out-file server.es5.js",
+    "start": "node server.es5.js",
+    "ng": "ng",
+    "dev": "ng serve",
     "build": "ng build --prod",
     "lint": "ng lint",
     "postinstall": "ng build --aot --prod"
