@@ -1,7 +1,7 @@
 import * as _ from "lodash"
 import * as __ from "../util"
 
-import { Options } from "angular-highcharts"
+//import { Options } from "angular-highcharts"
 import * as assert from "assert"
 
 import { ITree } from './ITree'
@@ -45,7 +45,7 @@ function getSerieDrillDown(treeData: ITree[], indVar, subVar, uniqVals) {
   return serieData
 }
 
-export function ChartFactory (indVar: string, data: ITree[], subVar?: string | null): Options {
+export function ChartFactory (indVar: string, data: ITree[], subVar?: string | null):any {
   assert(data.length, 'data has no length.')
 
   // Is it better to carry these values around, or recalculate each time?
