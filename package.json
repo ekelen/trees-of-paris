@@ -9,7 +9,7 @@
     "build-server": "babel server.js --out-file server.es5.js",
     "build": "ng build --prod",
     "lint": "ng lint",
-    "postinstall": "ng build --aot -prod"
+    "postinstall": "ng build --aot --prod"
   },
   "private": true,
   "dependencies": {
@@ -72,5 +72,9 @@
     "nodemon": "^1.14.11",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0"
+  },
+  "engines": {
+    "node": "8.9.4",
+    "npm": "5.6.0"
   }
 }
