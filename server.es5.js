@@ -9,7 +9,7 @@ var axios = require("axios");
 var moment = require("moment");
 var queryString = require("query-string");
 var ObjectID = mongodb.ObjectID;
-require('dotenv').config();
+require('dotenv').config({ silent: process.env.NODE_ENV === 'production' });
 
 var mongoose = require('mongoose');
 var async = require('async');
