@@ -16,7 +16,7 @@ import { ITree } from '../model/ITree'
 import * as _ from 'lodash'
 import * as __ from '../util'
 
-const baseTreeUrl = window.location.href + "/api/trees"
+const baseTreeUrl = window.location.href + "api/trees"
 const file = "./assets/data/arrdts_v2.json"
 
 @Injectable()
