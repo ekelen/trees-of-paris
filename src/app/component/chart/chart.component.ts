@@ -8,7 +8,6 @@ import { ChartFactory } from '../../model/Chart'
 
 import { TreesService } from '../../service/trees.service';
 
-import * as H from 'highcharts'
 import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'
@@ -31,7 +30,7 @@ import * as __ from '../../util'
 })
 export class ChartComponent implements OnInit, OnChanges {
   @Input() trees: ITree[]
-  chartOptions: H.Options = {}
+  chartOptions: any = {}
   chart:any
 
   indVar:string
