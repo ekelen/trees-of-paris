@@ -20,7 +20,7 @@ var treeData = "../assets/data/les-arbres.json"
 var treeSchema = require('./src/app/mongoose/Tree.js')
 
 var Trees = mongoose.model('Trees', treeSchema);
-mongoose.connect(process.env.MONGODB_URI_MLAB)
+mongoose.connect(process.env.PROD_MONGODB)
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 
@@ -53,9 +53,9 @@ function handleError(res, reason = "Server error.", message = reason, code) {
 }
 
 // ROUTES
-app.get('/init', function(req, res) {
-  addRecords()
-})
+// app.get('/init', function(req, res) {
+//   addRecords()
+// })
 
 app.get("/api/trees", async function(req, res) {
   const { query } = req

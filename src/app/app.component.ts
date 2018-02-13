@@ -13,7 +13,7 @@ export class AppComponent {
   params:any = {}
 
   constructor(
-    private paramsService: ParamsService) {}
+    public paramsService: ParamsService) {}
 
   ngOnInit() {
     this.paramsService.params$.subscribe(

@@ -20,7 +20,7 @@ export class MapComponent implements AfterViewInit {
   public options = {type : 'address', componentRestrictions: { country: 'FR' }}
   errorMessage:string = ''
 
-  constructor(private mapService: MapService) {}
+  constructor(public mapService: MapService) {}
 
   getFormattedAddress(e: any) {
     this.errorMessage = ''

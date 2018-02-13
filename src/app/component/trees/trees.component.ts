@@ -28,11 +28,10 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: any = []
   paramError = false
   errorMessage = ''
-  loading = false
 
   constructor(
-    private treeService: TreesService,
-    private mapService: MapService,
+    public treeService: TreesService,
+    public mapService: MapService,
     private paramsService: ParamsService ) {
 
   }
@@ -44,11 +43,9 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
     subs.push(treeService.trees$.subscribe(
       trees => {
         this.trees = trees
-        this.loading = false
       },
       err => {
         console.log(err.message)
-        this.loading = false
       }
     ))
 

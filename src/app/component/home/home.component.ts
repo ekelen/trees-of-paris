@@ -11,7 +11,7 @@ import { ParamsService } from '../../service/params.service'
     <p class="lead">Learn about the thousands of trees outside your door.</p>
     <hr class="my-4">
     <p>To start, search by address or arrondissement.</p>
-      <div class="btn btn-primary btn-lg" role="button" (click)="start($event)">Go</div>
+      <div class="btn btn-primary btn-lg" role="button" (click)="start()">Go</div>
     </div>
     </div>
   `,
