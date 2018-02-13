@@ -183,7 +183,7 @@ var Util = {
 };
 
 function Search(query) {
-  for (k in query) {
+  for (var k in query) {
     if (_.keys(Trees.schema.paths).includes(k) && query[k].length > 0) {
       if (Util.isArrayLike(query[k])) this[k] = { '$in': Util.toArray(query[k]).map(function (v) {
           return Util.isNumberLike(v) ? Util.toNum(v) : v;
@@ -195,7 +195,7 @@ function Search(query) {
 }
 
 function Options(query) {
-  for (k in query) {
+  for (var k in query) {
     if (["limit", "skip"].includes(k) && query[k].length > 0) {
       this[k] = Util.toNum(query[k]);
     }
