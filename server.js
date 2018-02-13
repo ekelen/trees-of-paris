@@ -5,6 +5,7 @@ var axios = require("axios")
 var moment = require("moment")
 var queryString = require("query-string")
 var ObjectID = mongodb.ObjectID;
+require('dotenv').config()
 
 var mongoose = require('mongoose')
 var async = require('async')
@@ -17,19 +18,15 @@ var request = require('request')
 
 var treeData = "../assets/data/les-arbres.json"
 var treeSchema = require('./src/app/mongoose/Tree.js')
-process.env.MONGODB_URI = "mongodb://admin:snNA46R67KOw@ds261527.mlab.com:61527/les-arbres"
 
 var Trees = mongoose.model('Trees', treeSchema);
-mongoose.connect('mongodb://localhost:27017/les-arbres')
-//mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI_MLAB)
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 
 db.on('error', function(){
-  console.log('Error.');
-  //console.log('DB connection error. If your port is being blocked over public wifi, this might work...');
-  //await mongoose.connect('mongodb://localhost:27017/les-arbres')
-  //let resultRetry = mongoose.connection
+  console.log('ERR: Error connecting to database.');
+  process.exit(1)
 });
 
 var app = express();
@@ -48,7 +45,6 @@ var server = app.listen(process.env.PORT || 8080, function () {
   var port = server.address().port;
   console.log("Tree Server now running on port", port);
 })
-
 
 // Generic error handler used by all endpoints.
 function handleError(res, reason = "Server error.", message = reason, code) {
@@ -89,7 +85,6 @@ app.get("/api/trees/search", async (req, res) => {
       .pipe(res.type('json'))
   })
 });
-
 
 var distDir = __dirname + "/dist/";
 app.use(express.static(distDir));

@@ -13,7 +13,7 @@ export const toPoly = (name: string | number, geometry: any): G.Feature<G.Polygo
   geometry
 })
 
-export const toLatLng = (lat: number, lng: number) => {
+export const toLatLng = (lat: number, lng: number): [number, number] => {
   const latCpy = math.round(+lat, 6)
   const lngCpy = math.round(+lng, 6)
   return [latCpy, lngCpy]

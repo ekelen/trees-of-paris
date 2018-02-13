@@ -24,10 +24,10 @@ function getMinRange(vals, indVar) {
   return getScalar(indVar) ? (_.max(vals) - _.min(vals)) / 10 : null
 }
 
-function getStep(indVar, uniqVals) {
-  //return getScalar(indVar) ? null :
-  return uniqVals.length > 20 ? parseInt(uniqVals.length / 20) : null
-}
+// function getStep(indVar, uniqVals) {
+//   //return getScalar(indVar) ? null :
+//   return uniqVals.length > 20 ? parseInt(uniqVals.length / 20) : null
+// }
 
 function getSerieData(rawValues, subVar = null) {
   return __.toCountPairs(rawValues).map(p => {

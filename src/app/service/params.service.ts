@@ -10,6 +10,7 @@ const TMP_ARRDT = 8
 const TMP_COORDS = []
 
 export interface IParams {
+  first_visit: boolean;
   user_arrdt: number;
   user_coordinates: [number, number];
   search_choice: string;
@@ -18,23 +19,19 @@ export interface IParams {
 
 @Injectable()
 export class ParamsService {
-  private _params: Params;
-  private _params$: BehaviorSubject<Params>
-  params$: Observable<Params>;
+  private _params: IParams;
+  private _params$: BehaviorSubject<IParams>
+  params$: Observable<IParams>;
 
   constructor() {
     this._params = {
-      // user_arrdt: 0,
-      // user_coordinates: null,
-      // search_choice: null,
-      // has_any_location: false,
-
-      user_arrdt: TMP_ARRDT,
+      first_visit: true,
+      user_arrdt: 0,
       user_coordinates: null,
-      search_choice: "by_arrdt",
-      has_any_location: true,
+      search_choice: null,
+      has_any_location: false,
     }
-    this._params$ = new BehaviorSubject<Params>(this._params)
+    this._params$ = new BehaviorSubject<IParams>(this._params)
     this.params$ = this._params$.asObservable()
 
     this.params$.subscribe(
@@ -74,4 +71,5 @@ export class ParamsService {
     else {
       return {}
     }
+  }
 }

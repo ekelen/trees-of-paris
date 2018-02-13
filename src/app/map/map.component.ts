@@ -18,7 +18,7 @@ import * as L from 'leaflet'
 
 export class MapComponent implements AfterViewInit {
   public options = {type : 'address', componentRestrictions: { country: 'FR' }}
-  errorMessage: ''
+  errorMessage:string = ''
 
   constructor(
     private mapService: MapService,

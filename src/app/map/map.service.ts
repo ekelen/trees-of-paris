@@ -46,8 +46,8 @@ export class MapService {
   private _coordinates$: BehaviorSubject<[number, number]>
   public coordinates$: Observable<[number, number]>
 
-  user_arrdt: number
-  user_coordinates: [number, number]
+  // user_arrdt: number
+  // user_coordinates: [number, number]
 
   private map: L.Map
   private arrdtLayer: L.FeatureGroup
@@ -107,7 +107,7 @@ export class MapService {
     // this._mapStore.user_arrdt = 0
   }
 
-  public search = (lat, lng) => {
+  public search = (lat:number, lng:number) => {
     const latLngExp = __.toLatLng(lat, lng)
     this.paramsService.updateCoords(latLngExp)
     this.paramsService.changeSearchChoice("by_coordinates")

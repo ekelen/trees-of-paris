@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MapService } from './map/map.service'
-import { ParamsService, Params } from './service/params.service'
+import { ParamsService } from './service/params.service'
 import { Routes, Router } from '@angular/router';
 
 import * as _ from 'lodash'
@@ -9,9 +9,9 @@ import * as _ from 'lodash'
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent extends Component {
+export class AppComponent {
   title = 'Trees of Paris';
-  params: Params = null
+  params:any = {}
 
   constructor(
     private paramsService: ParamsService,
@@ -22,5 +22,4 @@ export class AppComponent extends Component {
       params => this.params = {...params}
     )
   }
-
 }

@@ -1,7 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
-// import 'rxjs/add/operator/switchMap';
-import { Router } from '@angular/router';
 
 import { TreesService } from './trees.service'
 import { MapService } from '../map/map.service'
@@ -28,10 +26,10 @@ import * as __ from '../util'
 
 export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
   trees: ITree[] = []
-
   subscriptions: any = []
   paramError = false
   errorMessage = ''
+  loading = false
 
   constructor(
     private treeService: TreesService,
@@ -60,6 +58,7 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       err => {
         console.log(err.message)
+        this.loading = false
       }
     ))
 
