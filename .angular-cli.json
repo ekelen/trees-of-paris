@@ -21,7 +21,8 @@
       "styles": [
         "styles.css",
         "../node_modules/leaflet/dist/leaflet.css",
-        "assets/fonts/material-icons.css"
+        "assets/fonts/material-icons.css",
+        "assets/fonts/iconicons.css"
       ],
       "scripts": [
         "../node_modules/leaflet/dist/leaflet.js"
