@@ -22,7 +22,7 @@
         "styles.css",
         "../node_modules/leaflet/dist/leaflet.css",
         "assets/fonts/material-icons.css",
-        "assets/fonts/iconicons.css"
+        "assets/fonts/ionicons.css"
       ],
       "scripts": [
         "../node_modules/leaflet/dist/leaflet.js"
