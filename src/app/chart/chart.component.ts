@@ -68,8 +68,6 @@ export class ChartComponent implements OnInit, OnChanges {
     if (showAll) return this._redrawChart()
     const { indVar } = this
 
-    __.cl('we want to show all :', _.toString(showAll))
-
     const popularKeys =
     __.sortUniqs(this.trees, indVar)
     .slice(0, 20)
