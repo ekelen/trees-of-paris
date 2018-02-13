@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@types/highcharts": "^5.0.15",
     "@angular/animations": "^5.0.0",
     "@angular/cli": "^1.6.3",
     "@angular/common": "^5.0.0",

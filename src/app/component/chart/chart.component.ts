@@ -49,7 +49,7 @@ export class ChartComponent implements OnInit, OnChanges {
   ngOnChanges() {
     console.log('chart parent changes.')
     this.chartOptions = ChartFactory(this.indVar, this.trees, this.subVar)
-    this.chart = new Chart(this.chartOptions);
+    this.chart = new Chart(<any>{options: this.chartOptions});
   }
 
   handleIndVarUpdated(indVar) {
