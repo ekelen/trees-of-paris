@@ -1,17 +1,17 @@
 import { Component, EventEmitter, Output, OnInit, AfterViewInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Address } from 'angular-google-place';
+import { Paris } from '../../constants/Paris'
 
-import { Paris } from '../constants/Paris'
-import { MapService } from './map.service';
+import { MapService } from '../../service/map.service';
+import { ParamsService } from '../../service/params.service'
 
 import * as math from "mathjs"
 import * as _ from "lodash"
 import * as L from 'leaflet'
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: []
 })
@@ -20,10 +20,7 @@ export class MapComponent implements AfterViewInit {
   public options = {type : 'address', componentRestrictions: { country: 'FR' }}
   errorMessage:string = ''
 
-  constructor(
-    private mapService: MapService,
-    private router: Router) {
-  }
+  constructor(private mapService: MapService) {}
 
   getFormattedAddress(e: any) {
     this.errorMessage = ''
@@ -46,9 +43,10 @@ export class MapComponent implements AfterViewInit {
   }
 
   go() {
-    const param = this.mapService.user_coordinates ? 'geometry--' + this.mapService.user_coordinates.join() : 'arrondissement--' + this.mapService.user_arrdt
-    console.log(param)
-    this.router.navigate(['trees', encodeURIComponent(param)]);
+    // const param = this.mapService.user_coordinates ? 'geometry--' + this.mapService.user_coordinates.join() : 'arrondissement--' + this.mapService.user_arrdt
+    // console.log(param)
+    // this.router.navigate(['trees', encodeURIComponent(param)]);
+    this.mapService.confirmLocation(true)
   }
 
 }

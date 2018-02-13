@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MapService } from './map/map.service'
+import { MapService } from './service/map.service'
 import { ParamsService } from './service/params.service'
-import { Routes, Router } from '@angular/router';
 
 import * as _ from 'lodash'
 
@@ -14,12 +13,15 @@ export class AppComponent {
   params:any = {}
 
   constructor(
-    private paramsService: ParamsService,
-    private router: Router) {}
+    private paramsService: ParamsService) {}
 
   ngOnInit() {
     this.paramsService.params$.subscribe(
       params => this.params = {...params}
     )
+  }
+
+  public changeLocation() {
+    this.paramsService.toggleConfirmed(false)
   }
 }

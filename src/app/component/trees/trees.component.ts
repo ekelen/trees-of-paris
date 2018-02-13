@@ -1,17 +1,16 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core'
-import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 
-import { TreesService } from './trees.service'
-import { MapService } from '../map/map.service'
+import { TreesService } from '../../service/trees.service'
+import { MapService } from '../../service/map.service'
 import { LoadingComponent } from '../loading/loading.component'
-import { ParamsService, IParams } from '../service/params.service'
+import { ParamsService, IParams } from '../../service/params.service'
 
-import { ITree } from '../model/ITree'
-import { ChartFactory } from '../model/Chart'
-import { IError } from '../model/Error'
+import { ITree } from '../../model/ITree'
+import { ChartFactory } from '../../model/Chart'
+import { IError } from '../../model/Error'
 
 import * as _ from 'lodash'
-import * as __ from '../util'
+import * as __ from '../../util'
 
 @Component({
   selector: 'app-trees',
@@ -34,22 +33,13 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private treeService: TreesService,
     private mapService: MapService,
-    private paramsService: ParamsService,
-    private router: Router ) {
+    private paramsService: ParamsService ) {
 
-  }
-
-  private _redirectWithError = (message: string) => {
-    this.paramError = true
-    this.errorMessage = message
-    window.setTimeout(() => this.router.navigate(['/map']), 2500)
   }
 
   ngOnInit() {
     let subs: any = []
     const { treeService, paramsService } = this
-    if (!paramsService.params.has_any_location)
-      return this._redirectWithError("You must choose a location. Redirecting...")
 
     subs.push(treeService.trees$.subscribe(
       trees => {

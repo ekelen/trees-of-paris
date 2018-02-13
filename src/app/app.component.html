@@ -1,6 +1,6 @@
-	<nav *ngIf="router.url != '/'" class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+	<nav *ngIf="!params.first_visit" class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
 		<div class="container">
-		<a class="navbar-brand" [routerLink]="['/']"><i class="icon ion-leaf"></i> {{ title }}</a>
+		<a class="navbar-brand" href="/"><i class="icon ion-leaf"></i> {{ title }}</a>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
@@ -10,11 +10,8 @@
 								<span *ngIf="params.search_choice === 'by_coordinates'">Within 100 m of [{{ params.user_coordinates[0]}}, {{params.user_coordinates[1] }}]</span>
 							</span>
 						</li>
-			      <li class="nav-item">
-			        <a class="nav-link" [routerLink]="['/map']">Map</a>
-			      </li>
-						<li class="nav-item">
-			        <a class="nav-link" [routerLink]="['/trees']">Trees</a>
+			      <li class="nav-item" *ngIf="params && params.has_any_location && params.confirmed_any_location">
+			        <span class="nav-link" (click)="changeLocation()">Change</span>
 			      </li>
 			    </ul>
 		</div>
@@ -22,6 +19,8 @@
 	</nav>
 <div>
 
-  <router-outlet></router-outlet>
+<app-home *ngIf="params.first_visit && !params.has_any_location"></app-home>
+<app-map *ngIf="!params.first_visit && !params.confirmed_any_location"></app-map>
+<app-trees *ngIf="!params.first_visit && params.has_any_location && params.confirmed_any_location"></app-trees>
 
 </div>

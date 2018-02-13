@@ -115,6 +115,10 @@ export class MapService {
     this._addMarker(lat, lng)
   }
 
+  public confirmLocation = (confirmsLocation: boolean) => {
+    this.paramsService.toggleConfirmed(confirmsLocation)
+  }
+
   private _toggleArddt = (e, arr, feature): void => {
     const { user_arrdt } = this._mapStore
     const removing = user_arrdt === arr.int ? true : false

@@ -8,18 +8,17 @@ import { ChartModule, HIGHCHARTS_MODULES } from 'angular-highcharts';
 import * as more from 'highcharts/highcharts-more.src';
 import * as drilldown from 'highcharts/modules/drilldown.src';
 
-import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component';
-import { AboutComponent } from './about/about.component';
-import { TreesComponent } from './trees/trees.component'
-import { TreesService } from './trees/trees.service'
-import { MapComponent } from './map/map.component';
-import { MapService } from './map/map.service';
-import { ChartComponent } from './chart/chart.component'
-import { LoadingComponent } from './loading/loading.component';
-import { HomeComponent } from './home/home.component';
+import { MapComponent } from './component/map/map.component';
+import { TreesComponent } from './component/trees/trees.component'
+import { ChartComponent } from './component/chart/chart.component'
+import { LoadingComponent } from './component/loading/loading.component';
+import { HomeComponent } from './component/home/home.component';
+import { ChartControlComponent } from './component/chart-control/chart-control.component';
+
+import { TreesService } from './service/trees.service'
+import { MapService } from './service/map.service';
 import { ParamsService } from './service/params.service';
-import { ChartControlComponent } from './chart-control/chart-control.component';
 
 export function highchartsModules() {
   // apply Highcharts Modules to this array
@@ -30,7 +29,6 @@ export function highchartsModules() {
   declarations: [
     AppComponent,
     TreesComponent,
-    AboutComponent,
     MapComponent,
     ChartComponent,
     LoadingComponent,
@@ -42,7 +40,6 @@ export function highchartsModules() {
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    AppRoutingModule,
     AngularGooglePlaceModule,
     ChartModule
   ],

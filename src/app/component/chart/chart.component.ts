@@ -3,16 +3,16 @@ import * as Rx from 'rxjs/Rx';
 import * as math from "mathjs"
 
 import * as assert from "assert"
-import { ITree } from '../model/ITree'
-import { ChartFactory } from '../model/Chart'
+import { ITree } from '../../model/ITree'
+import { ChartFactory } from '../../model/Chart'
 
-import { TreesService } from '../trees/trees.service';
+import { TreesService } from '../../service/trees.service';
 
 import * as H from 'highcharts'
 import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'
-import * as __ from '../util'
+import * as __ from '../../util'
 
 @Component({
   selector: 'app-chart',

@@ -12,12 +12,12 @@
       {{errorMessage}}
     </div>
     <div class="d-2 ml-auto">
-        <a
+        <div
         class="btn btn-primary"
-        [routerLink]="['/trees']"
-        [ngClass]="{'disabled': !mapService.user_arrdt && !mapService.user_coordinates, 'btn-secondary': !mapService.user_arrdt && !mapService.user_coordinates}" >
+        [ngClass]="{'disabled': !mapService.user_arrdt && !mapService.user_coordinates, 'btn-secondary': !mapService.user_arrdt && !mapService.user_coordinates}"
+        (click)="go()" >
           Go
-        </a>
+        </div>
     </div>
   </div>
   <div class="container map-container">

@@ -7,10 +7,10 @@ import { Subject }    from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import * as G from "geojson"
-import { MapService } from '../map/map.service'
-import { ParamsService, IParams } from '../service/params.service'
-import { IError } from '../model/Error'
+import { MapService } from './map.service'
+import { ParamsService, IParams } from './params.service'
 
+import { IError } from '../model/Error'
 import { ITree } from '../model/ITree'
 
 import * as _ from 'lodash'

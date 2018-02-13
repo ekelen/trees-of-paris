@@ -24,11 +24,6 @@ function getMinRange(vals, indVar) {
   return getScalar(indVar) ? (_.max(vals) - _.min(vals)) / 10 : null
 }
 
-// function getStep(indVar, uniqVals) {
-//   //return getScalar(indVar) ? null :
-//   return uniqVals.length > 20 ? parseInt(uniqVals.length / 20) : null
-// }
-
 function getSerieData(rawValues, subVar = null) {
   return __.toCountPairs(rawValues).map(p => {
     return {y: p[1], name: p[0], drilldown: subVar ? p[0] : null}
@@ -85,21 +80,4 @@ export function ChartFactory (indVar: string, data: ITree[], subVar?: string | n
 
 export const INDVARS:string[] = [
   'species', 'genus', 'commonName', 'fullName', 'street',
-  'arrondissement', 'distance', 'usage', 'circumference', 'height'
-  // {name: 'id', type: 'string', isScalar: false},
-  // {name: 'genus', type: 'string', isScalar: false},
-  // {name: 'species', type: 'string', isScalar: false},
-  // {name: 'commonName', type: 'string', isScalar: false},
-  // {name: 'fullName', type: 'string', isScalar: false},
-  //
-  // {name: 'street', type: 'string', isScalar: false},
-  // {name: 'arrondissement', type: 'number', isScalar: false},
-  // {name: 'geometry', type: 'geojson', isScalar: false},
-  // 'geometry': GeoJSON.Point;
-  //
-  // 'notable': boolean;
-  // 'usage': string;
-  //
-  // 'circumference': number;
-  // 'height': number;
-]
+  'arrondissement', 'distance', 'usage', 'circumference', 'height']

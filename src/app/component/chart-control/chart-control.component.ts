@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ITree } from '../model/ITree'
-import { INDVARS } from '../model/Chart'
+import { ITree } from '../../model/ITree'
+import { INDVARS } from '../../model/Chart'
 
 import * as H from 'highcharts'
 import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'
-import * as __ from '../util'
+import * as __ from '../../util'
 
 @Component({
   selector: 'app-chart-control',

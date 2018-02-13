@@ -15,6 +15,7 @@ export interface IParams {
   user_coordinates: [number, number];
   search_choice: string;
   has_any_location: boolean;
+  confirmed_any_location: boolean;
 }
 
 @Injectable()
@@ -30,6 +31,7 @@ export class ParamsService {
       user_coordinates: null,
       search_choice: null,
       has_any_location: false,
+      confirmed_any_location: false,
     }
     this._params$ = new BehaviorSubject<IParams>(this._params)
     this.params$ = this._params$.asObservable()
@@ -39,6 +41,10 @@ export class ParamsService {
         this._params = _.cloneDeep(params)
       }
     )
+  }
+
+  toggleFirstVisit = (firstVisit: boolean) => {
+    this._params$.next({...this._params, first_visit: firstVisit})
   }
 
   updateCoords = (coords: [number, number]): void => {
@@ -55,6 +61,10 @@ export class ParamsService {
 
   changeSearchChoice = (searchChoice: string) => {
     this._params$.next({...this._params, search_choice: searchChoice})
+  }
+
+  toggleConfirmed = (confirmedLocation: boolean) => {
+    this._params$.next({...this._params, confirmed_any_location: confirmedLocation})
   }
 
   get params() {

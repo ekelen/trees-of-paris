@@ -54,11 +54,10 @@
     "query-string": "^5.0.1",
     "rxjs": "^5.5.2",
     "uniqid": "^4.1.1",
+    "typescript": "~2.4.2",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "^1.6.3",
-    "@angular/compiler-cli": "^5.2.4",
     "@angular/language-service": "^5.0.0",
     "@types/highcharts": "^5.0.15",
     "@types/jasmine": "~2.5.53",
@@ -78,7 +77,6 @@
     "nodemon": "^1.14.11",
     "protractor": "~5.1.2",
     "ts-node": "~3.2.0",
-    "tslint": "~5.7.0",
-    "typescript": "~2.4.2"
+    "tslint": "~5.7.0"
   }
 }
