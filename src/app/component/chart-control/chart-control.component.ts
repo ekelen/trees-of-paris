@@ -53,11 +53,9 @@ export class ChartControlComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('initing')
   }
 
   ngOnChanges() {
-    console.log('changing')
     this.indVars = INDVARS.filter(v => v !== this.subVar)
     this.subVars = INDVARS.filter(v => v !== this.indVar)
   }

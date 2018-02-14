@@ -62,14 +62,15 @@ export class TreesService {
     .subscribe(
       trees => {
         this.loading = false
-        console.log(`- Got ${trees.length} trees from server.`)
+        // console.log(`- Got ${trees.length} trees from server.`)
         this._trees = [...trees]
         this._trees$.next([...trees])
         if (trees.length < 10000) localStorage.setItem('trees', JSON.stringify(trees))
       },
       err => {
         this.loading = false
-        console.log('getTrees err', err.message)
+        console.error('Server error: ' + err.message || 'Unknown error.')
+        // console.log('getTrees err', err.message)
       }
     )
   }

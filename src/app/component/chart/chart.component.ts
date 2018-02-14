@@ -48,8 +48,6 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    console.log('onChanges chart component')
-    console.log(this.indVar, this.subVar)
     this._redrawChart()
   }
 
