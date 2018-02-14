@@ -13,13 +13,14 @@ import * as __ from '../../util'
 @Component({
   selector: 'app-chart-control',
   template: `
-    <div class="flex flex-row pt-2 mt-2">
+    <div class="d-flex flex-row pt-2 mt-2">
 
-    <select class="d-2" [ngModel]="indVar" (ngModelChange)="onChangeIndvar($event)" name="indVar">
+    <div class="p-2">Input variable:</div>
+    <select class="p-2" [ngModel]="indVar" (ngModelChange)="onChangeIndvar($event)" name="indVar">
       <option *ngFor="let i of indVars" [value]=i>{{ i }}</option>
     </select>
 
-    <div class="form-check form-check-inline">
+    <div class="form-check form-check-inline ml-1">
       <input
       class="form-check-input"
       type="checkbox"
@@ -28,9 +29,11 @@ import * as __ from '../../util'
       (click)="toggleIndVarShowAll($event)">Show All
     </div>
 
-    <select class="d-2" [ngModel]="subVar" (ngModelChange)="onChangeSubVar($event)" name="subVar">
+    <div class="p-2">Drilldown by:</div>
+    <select class="p-2" [ngModel]="subVar" (ngModelChange)="onChangeSubVar($event)" name="subVar">
       <option *ngFor="let s of subVars" [value]=s>{{ s }}</option>
     </select>
+    <div *ngIf="subVar" class="p-2 text-success">Click on any bar on the graph to drill down data!</div>
 
     </div>
   `,
