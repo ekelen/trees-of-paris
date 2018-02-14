@@ -50,8 +50,7 @@ export class ChartComponent implements OnInit, OnChanges {
   ngOnChanges() {
     console.log('onChanges chart component')
     console.log(this.indVar, this.subVar)
-    this.chartOptions = ChartFactory(this.indVar, this.trees, this.subVar)
-    this.chart = new Chart(<any>{options: this.chartOptions});
+    this._redrawChart()
   }
 
   handleIndVarUpdated(indVar) {
