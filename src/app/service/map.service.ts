@@ -122,6 +122,7 @@ export class MapService {
   private _toggleArddt = (e, arr, feature): void => {
     const { user_arrdt } = this._mapStore
     const removing = user_arrdt === arr.int ? true : false
+    this.arrdtLayer.setStyle({"fillColor": "gray"})
     feature.setStyle({"fillColor" : removing ? "gray" : "limegreen"})
     this.paramsService.updateArrdt(removing ? 0 : arr.int)
     this.paramsService.changeSearchChoice("by_arrdt")

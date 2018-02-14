@@ -43,9 +43,6 @@ export class MapComponent implements AfterViewInit {
   }
 
   go() {
-    // const param = this.mapService.user_coordinates ? 'geometry--' + this.mapService.user_coordinates.join() : 'arrondissement--' + this.mapService.user_arrdt
-    // console.log(param)
-    // this.router.navigate(['trees', encodeURIComponent(param)]);
     this.mapService.confirmLocation(true)
   }
 
