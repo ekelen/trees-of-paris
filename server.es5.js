@@ -144,7 +144,7 @@ var formatGeoSearch = function formatGeoSearch(lnglat) {
   var distance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 200;
 
   var geoQuery = {};
-  geoPt = {
+  var geoPt = {
     type: "Point",
     coordinates: lnglat
   };

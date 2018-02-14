@@ -93,7 +93,7 @@ export class MapService {
   }
 
   public initMap = () => {
-    console.log('initMap')
+    //console.log('initMap')
     this._makeLayers()
     this._loadArrdts()
   }
@@ -157,7 +157,7 @@ export class MapService {
     this._getJSON().subscribe(
     data => {
       const arrs = data
-      console.log(arrs[0])
+      //console.log(arrs[0])
 
       arrs.forEach(arr => {
         function onEachFeature(feature, layer) {

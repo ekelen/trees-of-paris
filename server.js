@@ -93,7 +93,7 @@ app.use(express.static(distDir));
 // CONTROLLERS
 const formatGeoSearch = (lnglat, distance = 200) => {
   let geoQuery = {}
-  geoPt = {
+  let geoPt = {
     type: "Point",
     coordinates: lnglat
   }

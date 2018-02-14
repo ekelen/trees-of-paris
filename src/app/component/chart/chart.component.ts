@@ -44,10 +44,12 @@ export class ChartComponent implements OnInit, OnChanges {
       this.subVar = null // no drilldown by default
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   ngOnChanges() {
-    console.log('chart parent changes.')
+    console.log('onChanges chart component')
+    console.log(this.indVar, this.subVar)
     this.chartOptions = ChartFactory(this.indVar, this.trees, this.subVar)
     this.chart = new Chart(<any>{options: this.chartOptions});
   }
