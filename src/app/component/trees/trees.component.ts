@@ -18,7 +18,7 @@ import * as __ from '../../util'
   <div class="container mt-5 pt-5">
   <div *ngIf="paramError" class="jumbotron">{{ errorMessage }}</div>
   <app-loading *ngIf=treeService.loading></app-loading>
-  <app-chart *ngIf="trees && trees.length" [trees]=trees></app-chart>
+  <app-chart *ngIf="trees && trees.length && !viewClosest" [trees]=trees></app-chart>
   </div>
   `
 })
@@ -29,9 +29,10 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
   paramError = false
   errorMessage = ''
 
+  viewClosest = false
+
   constructor(
     public treeService: TreesService,
-    public mapService: MapService,
     private paramsService: ParamsService ) {
 
   }
@@ -55,6 +56,7 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() { }
 
+  // TODO: Add this everywhere
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe())
   }
