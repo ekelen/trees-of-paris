@@ -18,20 +18,21 @@ import * as L from 'leaflet'
 
 export class MapComponent implements AfterViewInit {
   public options = {type : 'address', componentRestrictions: { country: 'FR' }}
-  errorMessage:string = ''
+  errorMessage: string = ''
 
   constructor(public mapService: MapService) {}
 
   getFormattedAddress(e: any) {
     this.errorMessage = ''
-   if (e.postal_code &&
-     _.inRange(parseInt(e.postal_code), 75001, 75020) &&
-     _.inRange(parseFloat(e.lat), Paris.min_lat, Paris.max_lat) &&
-     _.inRange(parseFloat(e.lng), Paris.min_lng, Paris.max_lng)) {
+    if (e.postal_code &&
+      _.inRange(parseInt(e.postal_code), 75001, 75020) &&
+      _.inRange(parseFloat(e.lat), Paris.min_lat, Paris.max_lat) &&
+      _.inRange(parseFloat(e.lng), Paris.min_lng, Paris.max_lng)) {
       this.mapService.search(e.lat, e.lng)
-    } else
-      this.errorMessage = "Please enter a valid address within one of the 20 arrondissements."
+    } else {
+      this.errorMessage = 'Please enter a valid address within one of the 20 arrondissements.'
     }
+  }
 
   ngAfterViewInit() {
     this.mapService.initMap()
@@ -42,7 +43,10 @@ export class MapComponent implements AfterViewInit {
     this.mapService.toggleShowArrdts()
   }
 
-  go() {
+  go(e) {
+    if (Array.from(e.target.classList).includes('disabled')) {
+      this.errorMessage = 'Choose an arrondissement or an address first.'
+      return false }
     this.mapService.confirmLocation(true)
   }
 

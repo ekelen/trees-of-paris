@@ -45,7 +45,7 @@ function getSerieDrillDown(treeData: ITree[], indVar, subVar, uniqVals) {
   return serieData
 }
 
-export function ChartFactory (indVar: string, data: ITree[], subVar?: string | null):any {
+export function IChart (indVar: string, data: ITree[], subVar?: string | null):any {
   assert(data.length, 'data has no length.')
 
   // Is it better to carry these values around, or recalculate each time?
@@ -59,7 +59,7 @@ export function ChartFactory (indVar: string, data: ITree[], subVar?: string | n
       title: { text: subVar ? `${indVar} > ${subVar}` : indVar },
       minRange: getMinRange(uniqVals, indVar),
       type: 'category',
-      //categories: getCategories(uniqVals, indVar)
+      // categories: getCategories(uniqVals, indVar)
     },
     yAxis: {
       min: 0,
@@ -78,6 +78,6 @@ export function ChartFactory (indVar: string, data: ITree[], subVar?: string | n
 
 // CONSTANTS
 
-export const INDVARS:string[] = [
+export const INDVARS: string[] = [
   'species', 'genus', 'commonName', 'fullName', 'street',
   'arrondissement', 'distance', 'usage', 'circumference', 'height']

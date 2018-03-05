@@ -10,16 +10,16 @@ import { ParamsService } from '../service/params.service'
 import * as L from 'leaflet'
 import * as G from 'geojson'
 
-import * as _ from "lodash"
-import * as __ from "../util"
+import * as _ from 'lodash'
+import * as __ from '../util'
 
-const file = "../../assets/data/arrdts_v2.json"
-const basePlaceUrl:string = "https://maps.googleapis.com/maps/api/js"
+const file = '../../assets/data/arrdts_v2.json'
+const basePlaceUrl:string = 'https://maps.googleapis.com/maps/api/js'
 
 const center: [number, number] = [48.8566, 2.3522]
 const zoom: number = 12
 
-const mapTemplate:string = "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}"
+const mapTemplate:string = 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 const mapOptions:L.TileLayerOptions = {
   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
   zoomControl: false,
@@ -99,7 +99,7 @@ export class MapService {
   }
 
   private _resetMap = () => {
-    this.arrdtLayer.setStyle({"fillColor": "gray"})
+    this.arrdtLayer.setStyle({'fillColor': 'gray'})
     this.paramsService.updateArrdt(0)
     this.paramsService.updateCoords(null)
     this.paramsService.toggleUserHasLocation(false)
@@ -107,10 +107,10 @@ export class MapService {
     // this._mapStore.user_arrdt = 0
   }
 
-  public search = (lat:number, lng:number) => {
+  public search = (lat: number, lng: number) => {
     const latLngExp = __.toLatLng(lat, lng)
     this.paramsService.updateCoords(latLngExp)
-    this.paramsService.changeSearchChoice("by_coordinates")
+    this.paramsService.changeSearchChoice('by_coordinates')
     this.paramsService.toggleUserHasLocation(true)
     this._addMarker(lat, lng)
   }
@@ -121,16 +121,18 @@ export class MapService {
 
   private _toggleArddt = (e, arr, feature): void => {
     const { user_arrdt } = this._mapStore
-    const removing = user_arrdt === arr.int ? true : false
-    this.arrdtLayer.setStyle({"fillColor": "gray"})
-    feature.setStyle({"fillColor" : removing ? "gray" : "limegreen"})
+    const removing = user_arrdt === arr.int
+    this.arrdtLayer.setStyle({'fillColor': 'gray'})
+    feature.setStyle({'fillColor' : removing ? 'gray' : 'limegreen'})
     this.paramsService.updateArrdt(removing ? 0 : arr.int)
-    this.paramsService.changeSearchChoice("by_arrdt")
+    this.paramsService.changeSearchChoice('by_arrdt')
     this.paramsService.toggleUserHasLocation(!removing)
   }
 
   private _addMarker = (lat, lng) => {
-    this.userMarker = L.marker([lat, lng], {icon: L.icon({iconUrl: "../assets/img/marker-icon.png", shadowUrl: "../assets/img/marker-shadow.png"})})
+    this.userMarker = L.marker([lat, lng], {
+      icon: L.icon({
+        iconUrl: '../assets/img/marker-icon.png', shadowUrl: '../assets/img/marker-shadow.png'})})
       .addTo(this.markerLayer);
   }
 
@@ -144,8 +146,8 @@ export class MapService {
       zoom,
       layers: [this.streetsLayer, this.arrdtLayer]
     });
-    const baseMaps = {"Streets": this.streetsLayer}
-    const overlayMaps = {"Arrdts": this.arrdtLayer, "Marker": this.markerLayer}
+    const baseMaps = {'Streets': this.streetsLayer}
+    const overlayMaps = {'Arrdts': this.arrdtLayer, 'Marker': this.markerLayer}
 
     L.control.layers(baseMaps, overlayMaps).addTo(this.map);
   }
@@ -157,10 +159,7 @@ export class MapService {
   private _loadArrdts = () => {
     this._getJSON().subscribe(
     data => {
-      const arrs = data
-      //console.log(arrs[0])
-
-      arrs.forEach(arr => {
+      data.forEach(arr => {
         function onEachFeature(feature, layer) {
           if (feature.properties && feature.properties.toolTipContent) {
             layer.bindTooltip(feature.properties.toolTipContent);
@@ -169,7 +168,7 @@ export class MapService {
 
         let arrFeature = L.geoJSON(__.toPoly(arr.name, arr.poly),
           {onEachFeature: onEachFeature})
-          .setStyle({color: "gray"})
+          .setStyle({color: 'gray'})
           .on('click', (e) => this._toggleArddt(e, arr, arrFeature))
           .addTo(this.arrdtLayer)
         })

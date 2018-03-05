@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'
 
 @Component({
   selector: 'app-loading',
@@ -8,8 +8,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   </p>`
 })
 export class LoadingComponent implements OnInit, OnDestroy {
-  timer = 0
-  loops:number[]
+  timer: any
+  loops: number[]
 
   constructor() {
   }
@@ -17,7 +17,7 @@ export class LoadingComponent implements OnInit, OnDestroy {
   ngOnInit() {
     let i = 1
     this.timer = setInterval(() => {
-      this.loops = Array(i % 10).fill('.');
+      this.loops = Array(i % 10).fill('.')
       i = i === 10 ? 1 : i + 1
     }, 400)
   }

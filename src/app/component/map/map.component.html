@@ -13,9 +13,9 @@
     </div>
     <div class="d-2 ml-auto">
         <div
-        class="btn btn-primary"
-        [ngClass]="{'disabled': !mapService.user_arrdt && !mapService.user_coordinates, 'btn-secondary': !mapService.user_arrdt && !mapService.user_coordinates}"
-        (click)="go()" >
+        class="btn btn-success"
+        [ngClass]="{'disabled': !mapService.user_arrdt && !mapService.user_coordinates}"
+        (click)="go($event)" >
           Go
         </div>
     </div>

@@ -4,7 +4,7 @@
       true,
       100
     ],
-    "no-inferrable-types": true,
+    "no-inferrable-types": false,
     "class-name": true,
     "comment-format": [
       true,
@@ -36,8 +36,7 @@
       "avoid-escape"
     ],
     "semicolon": [
-      true,
-      "always"
+      false
     ],
     "typedef-whitespace": [
       true,

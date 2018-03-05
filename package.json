@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start-dev": "nodemon server.js",
+    "srv-dev": "nodemon server.js",
     "build-server": "babel server.js --out-file server.es5.js",
     "start": "node server.es5.js",
     "ng": "ng",
-    "dev": "ng serve --proxy-conf proxy.conf.json",
+    "client-dev": "ng serve --proxy-conf proxy.conf.json",
     "build": "ng build --prod",
     "lint": "ng lint",
     "postinstall": "ng build --aot --prod"
