@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { HttpClient, HttpHeaders, HttpParams, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
-import { URLSearchParams, QueryEncoder } from '@angular/http'
-import { Subject }    from 'rxjs/Subject';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { MapService } from './map.service'
-import { ParamsService, IParams } from './params.service'
+import { ParamsService } from './params.service'
 
 import { IError } from '../model/Error'
 import { ITree } from '../model/ITree'
@@ -17,7 +13,6 @@ import * as __ from '../util'
 import {environment} from '../../environments/environment'
 
 const baseTreeUrl = window.location.href + 'api/trees'
-const file = './assets/data/arrdts_v2.json'
 
 @Injectable()
 export class TreesService {
