@@ -28,15 +28,11 @@ export class TreesService {
       this.trees$ = this._trees$.asObservable()
   }
 
-  private _loadFromLocal = (): boolean => {
+  private _loadFromLocal = () => {
     if (localStorage.getItem('trees')) {
       this._trees = JSON.parse(localStorage.getItem('trees'))
       this._trees$.next(this._trees)
       this.loading = false
-      console.log('---- RETURNED TREES FROM LOCAL STORAGE -----\n')
-      return true
-    } else {
-      return false
     }
   }
 
@@ -52,8 +48,11 @@ export class TreesService {
     // console.log('2. server friendly params: ', this.paramsService.serverFriendlyParams)
     this.loading = true
 
-    if (environment.useMyTestData) return this._loadMock()
-    if (!environment.production && environment.useLocalData) return this._loadFromLocal()
+    if (environment.useMyTestData) { return this._loadMock() }
+    if (environment.useFromLocal) {
+      this._loadFromLocal()
+      if (this._trees.length) { return }
+    }
 
     // TODO: Better error handling
     if (!params) throw new Error('Need location-based parameters (otherwise dataset is too large).')
@@ -70,7 +69,7 @@ export class TreesService {
         // console.log(`- Got ${trees.length} trees from server.`)
         this._trees = [...trees]
         this._trees$.next([...trees])
-        if (trees.length < 10000 && !environment.production) localStorage.setItem('trees', JSON.stringify(trees))
+        if (trees.length < 10000 && !environment.production) { localStorage.setItem('trees', JSON.stringify(trees)) }
       },
       err => {
         this.loading = false
