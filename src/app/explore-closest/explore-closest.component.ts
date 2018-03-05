@@ -56,6 +56,7 @@ export class ExploreClosestComponent implements OnInit {
 
   ngOnInit() {
     if (this.trees.length && this.coordinates) {
+      // trees are already ordered by distance (mongoDb $nearSphere search)
       this.closestTrees = [...this.trees.slice(0, 100)]
     }
     this.distanceClosestTree = this.distanceFromMe(0)
@@ -95,7 +96,7 @@ export class ExploreClosestComponent implements OnInit {
 
   private _drawTrees = () => {
     this.closestTrees.forEach(tree => {
-      console.log(tree.genus)
+      console.log(tree.notable)
       this._addMarker(
         tree.geometry.coordinates[1],
         tree.geometry.coordinates[0],
