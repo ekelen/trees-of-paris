@@ -55,10 +55,14 @@
   border: 1px solid orange;
 }
 
-#map {
+#map, #treeMap {
   height: 400px;
   padding: 0;
   margin: 0
+}
+
+#treeMap {
+  width: 400px;
 }
 
 #autocomplete {

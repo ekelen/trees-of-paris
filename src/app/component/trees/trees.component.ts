@@ -18,18 +18,26 @@ import * as __ from '../../util'
   <div class="container mt-5 pt-5">
   <div *ngIf="paramError" class="jumbotron">{{ errorMessage }}</div>
   <app-loading *ngIf=treeService.loading></app-loading>
-  <app-chart *ngIf="trees && trees.length && !viewClosest" [trees]=trees></app-chart>
+    <p *ngIf="!treeService.loading">There are {{trees.length}} verified trees
+      <span *ngIf="coordinates">within 300m of where you live</span>
+      <span *ngIf="!coordinates">in your arrondissement</span>.</p>
+  <app-explore-closest *ngIf="!treeService.loading && !noTreesFound && hasCoords" [trees]=trees [coordinates]=coordinates></app-explore-closest>
+  <app-chart *ngIf="!treeService.loading && !noTreesFound && viewChart" [trees]=trees></app-chart>
   </div>
   `
 })
 
 export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
   trees: ITree[] = []
+  noTreesFound = true
+
   subscriptions: any = []
   paramError = false
   errorMessage = ''
 
-  viewClosest = false
+  hasCoords = false
+  coordinates: [number, number] = null
+  viewChart = true
 
   constructor(
     public treeService: TreesService,
@@ -44,6 +52,18 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
     subs.push(treeService.trees$.subscribe(
       trees => {
         this.trees = trees
+        this.noTreesFound = !trees.length
+      },
+      err => {
+        console.log(err.message)
+        this.noTreesFound = true
+      }
+    ))
+
+    subs.push(paramsService.params$.subscribe(
+      params => {
+        this.hasCoords = params.search_choice === 'by_coordinates' && !!params.user_coordinates
+        this.coordinates = params.user_coordinates
       },
       err => {
         console.log(err.message)

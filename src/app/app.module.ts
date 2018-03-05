@@ -21,6 +21,7 @@ import { ChartControlComponent } from './component/chart-control/chart-control.c
 import { TreesService } from './service/trees.service'
 import { MapService } from './service/map.service';
 import { ParamsService } from './service/params.service';
+import { ExploreClosestComponent } from './explore-closest/explore-closest.component';
 
 export function highchartsModules() {
   // apply Highcharts Modules to this array
@@ -35,7 +36,8 @@ export function highchartsModules() {
     ChartComponent,
     LoadingComponent,
     HomeComponent,
-    ChartControlComponent
+    ChartControlComponent,
+    ExploreClosestComponent
   ],
   imports: [
     NgbModule.forRoot(),

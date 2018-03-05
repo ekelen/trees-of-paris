@@ -5,9 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 
 import * as _ from 'lodash'
-
-const TMP_ARRDT = 8
-const TMP_COORDS = []
+import {environment} from '../../environments/environment'
 
 export interface IParams {
   first_visit: boolean;
@@ -25,14 +23,16 @@ export class ParamsService {
   params$: Observable<IParams>;
 
   constructor() {
-    this._params = {
-      first_visit: true,
-      user_arrdt: 0,
-      user_coordinates: null,
-      search_choice: null,
-      has_any_location: false,
-      confirmed_any_location: false,
-    }
+    this._params = environment.useMyTestData ?
+      environment.myTestParams : {
+          first_visit: true,
+          user_arrdt: 0,
+          user_coordinates: null,
+          search_choice: null,
+          has_any_location: false,
+          confirmed_any_location: false,
+        }
+
     this._params$ = new BehaviorSubject<IParams>(this._params)
     this.params$ = this._params$.asObservable()
 

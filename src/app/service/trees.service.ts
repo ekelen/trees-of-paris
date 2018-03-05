@@ -6,7 +6,6 @@ import { URLSearchParams, QueryEncoder } from '@angular/http'
 import { Subject }    from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import * as G from "geojson"
 import { MapService } from './map.service'
 import { ParamsService, IParams } from './params.service'
 
@@ -15,9 +14,10 @@ import { ITree } from '../model/ITree'
 
 import * as _ from 'lodash'
 import * as __ from '../util'
+import {environment} from '../../environments/environment'
 
-const baseTreeUrl = window.location.href + "api/trees"
-const file = "./assets/data/arrdts_v2.json"
+const baseTreeUrl = window.location.href + 'api/trees'
+const file = './assets/data/arrdts_v2.json'
 
 @Injectable()
 export class TreesService {
@@ -33,7 +33,7 @@ export class TreesService {
       this.trees$ = this._trees$.asObservable()
   }
 
-  private _loadFromLocal = ():boolean => {
+  private _loadFromLocal = (): boolean => {
     if (localStorage.getItem('trees')) {
       this._trees = JSON.parse(localStorage.getItem('trees'))
       this._trees$.next(this._trees)
@@ -45,10 +45,19 @@ export class TreesService {
     }
   }
 
+  private _loadMock = () => {
+        this._trees = environment.mockTrees
+        this._trees$.next(environment.mockTrees)
+        this.loading = false
+  }
+
   public getTrees = (): void => {
+
     let params = this.paramsService.serverFriendlyParams
     // console.log('2. server friendly params: ', this.paramsService.serverFriendlyParams)
     this.loading = true
+
+    if (environment.useMyTestData) return this._loadMock()
 
     // TODO: Better error handling
     if (!params) throw new Error('Need location-based parameters (otherwise dataset is too large).')
@@ -65,7 +74,7 @@ export class TreesService {
         // console.log(`- Got ${trees.length} trees from server.`)
         this._trees = [...trees]
         this._trees$.next([...trees])
-        if (trees.length < 10000) localStorage.setItem('trees', JSON.stringify(trees))
+        if (trees.length < 10000 && !environment.production) localStorage.setItem('trees', JSON.stringify(trees))
       },
       err => {
         this.loading = false
