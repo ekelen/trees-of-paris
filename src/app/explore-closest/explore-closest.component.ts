@@ -103,16 +103,21 @@ export class ExploreClosestComponent implements OnInit {
       this._addMarker(
         tree.geometry.coordinates[1],
         tree.geometry.coordinates[0],
-        iconType)
+        iconType,
+        JSON.stringify(tree))
     })
   }
 
-  private _addMarker = (lat, lng, type: string) => {
+  private _addMarker = (lat, lng, type: string, popupContent: any = null) => {
     if (!type) { type  = 'deciduous' }
-    this.userMarker = L.marker([lat, lng], {
+    if (!popupContent) { popupContent = null }
+    let marker = L.marker([lat, lng], {
     icon: L.icon({
       iconUrl: `../assets/img/${type}-icon-sm.png`})})
-    .addTo(this.markerLayer);
+    if (popupContent) {
+      marker.bindPopup(popupContent)
+    }
+    marker.addTo(this.markerLayer);
   }
 
   distanceFromMe(index) { // TODO: Put in utils
