@@ -4,6 +4,7 @@ export const environment = {
   production: true,
   useMyTestData: false,
   myTestParams: <IParams> null,
+  useFromLocal: false,
   mockTrees: <any> []
 };
 

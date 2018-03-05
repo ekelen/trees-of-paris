@@ -53,6 +53,7 @@ export class TreesService {
     this.loading = true
 
     if (environment.useMyTestData) return this._loadMock()
+    if (!environment.production && environment.useLocalData) return this._loadFromLocal()
 
     // TODO: Better error handling
     if (!params) throw new Error('Need location-based parameters (otherwise dataset is too large).')
