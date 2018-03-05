@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, AfterViewInit } from '@angular/core';
+import {Component, EventEmitter, Output, OnInit, AfterViewInit, OnChanges} from '@angular/core'
 import { NgForm } from '@angular/forms';
 import { Address } from 'angular-google-place';
 import { Paris } from '../../constants/Paris'
@@ -16,11 +16,14 @@ import * as L from 'leaflet'
   styleUrls: []
 })
 
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnChanges {
   public options = {type : 'address', componentRestrictions: { country: 'FR' }}
   errorMessage: string = ''
+  hasEnteredValidLocation: boolean = false
 
-  constructor(public mapService: MapService) {}
+  constructor(public mapService: MapService) {
+
+  }
 
   getFormattedAddress(e: any) {
     this.errorMessage = ''
@@ -32,6 +35,11 @@ export class MapComponent implements AfterViewInit {
     } else {
       this.errorMessage = 'Please enter a valid address within one of the 20 arrondissements.'
     }
+  }
+
+  ngOnChanges() {
+    console.log('changes')
+    if (this.hasEnteredValidLocation) { this.errorMessage = '' }
   }
 
   ngAfterViewInit() {

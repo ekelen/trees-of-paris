@@ -14,13 +14,13 @@ import * as _ from 'lodash'
 import * as __ from '../util'
 
 const file = '../../assets/data/arrdts_v2.json'
-const basePlaceUrl:string = 'https://maps.googleapis.com/maps/api/js'
+const basePlaceUrl = 'https://maps.googleapis.com/maps/api/js'
 
 const center: [number, number] = [48.8566, 2.3522]
 const zoom: number = 12
 
-const mapTemplate:string = 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
-const mapOptions:L.TileLayerOptions = {
+const mapTemplate = 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
+const mapOptions: L.TileLayerOptions = {
   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
   zoomControl: false,
   minZoom: zoom,
@@ -45,9 +45,6 @@ export class MapService {
 
   private _coordinates$: BehaviorSubject<[number, number]>
   public coordinates$: Observable<[number, number]>
-
-  // user_arrdt: number
-  // user_coordinates: [number, number]
 
   private map: L.Map
   private arrdtLayer: L.FeatureGroup
