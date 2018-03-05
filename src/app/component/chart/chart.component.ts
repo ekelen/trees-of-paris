@@ -4,7 +4,7 @@ import * as math from "mathjs"
 
 import * as assert from "assert"
 import { ITree } from '../../model/ITree'
-import { ChartFactory } from '../../model/Chart'
+import { IChart } from '../../model/Chart'
 
 import { TreesService } from '../../service/trees.service';
 
@@ -31,16 +31,17 @@ import * as __ from '../../util'
 export class ChartComponent implements OnInit, OnChanges {
   @Input() trees: ITree[]
   chartOptions: any = {}
-  chart:any
+  chart: any
 
-  indVar:string
-  subVar:string
 
-  indVarShowAll:boolean = true
+  indVar: string
+  subVar: string
+
+  indVarShowAll = true
 
   constructor(
-    private treeService: TreesService) {
-      this.indVar = "commonName" // common name by default
+    private treesService: TreesService ) {
+      this.indVar = 'commonName' // common name by default
       this.subVar = null // no drilldown by default
   }
 
@@ -61,9 +62,9 @@ export class ChartComponent implements OnInit, OnChanges {
     this._redrawChart()
   }
 
-  handleToggleIndVarShowAll(showAll:boolean) {
+  handleToggleIndVarShowAll(showAll: boolean) {
     this.indVarShowAll = showAll
-    if (showAll) return this._redrawChart()
+    if (showAll) { return this._redrawChart() }
     const { indVar } = this
 
     const popularKeys =
@@ -72,12 +73,12 @@ export class ChartComponent implements OnInit, OnChanges {
     .map(v => v[0])
 
     const filteredData = this.trees.filter(t => popularKeys.includes(t[indVar]))
-    this.chartOptions = ChartFactory(indVar, filteredData, this.subVar)
+    this.chartOptions = IChart(indVar, filteredData, this.subVar)
     this.chart = new Chart(this.chartOptions)
   }
 
   private _redrawChart() {
-    this.chartOptions = ChartFactory(this.indVar, this.trees, this.subVar)
+    this.chartOptions = IChart(this.indVar, this.trees, this.subVar)
     this.chart = new Chart(this.chartOptions);
   }
 }

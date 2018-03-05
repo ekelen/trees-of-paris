@@ -1,5 +1,24 @@
 @charset "UTF-8";
 
+:root {
+  --lgreen1: #dcedc8;
+  --lgreen2: #aed581;
+  --green: #689f38;
+  --dgreen1: #558b2f;
+  --dgreen2: #33691e;
+}
+
+.green {
+  color: var(--green);
+}
+.greenbg {
+  background-color: var(--green);
+}
+
+.strong {
+  font-weight: bolder;
+}
+
 .container {
 }
 
@@ -16,10 +35,6 @@
   width: 100vw;
   padding-bottom: 56.25% /* 16:9 ratio */
 }
-
-/* .home-background {
-  background: url('./assets/img/jace-grandinetti_orig_g2fycc/jace-grandinetti_orig_g2fycc_c_scale,w_200.jpg')
-} */
 
 .home-container img {
   display: none;
@@ -51,7 +66,7 @@
 }
 
 .linkStyle {
-  color: blue
+  color: var(--green)
 }
 
 p {

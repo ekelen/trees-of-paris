@@ -10,7 +10,7 @@ import * as _ from 'lodash'
 })
 export class AppComponent {
   title = 'Trees of Paris';
-  params:any = {}
+  params: any = {}
 
   constructor(
     public paramsService: ParamsService) {}

@@ -6,7 +6,7 @@ import { LoadingComponent } from '../loading/loading.component'
 import { ParamsService, IParams } from '../../service/params.service'
 
 import { ITree } from '../../model/ITree'
-import { ChartFactory } from '../../model/Chart'
+import { IChart } from '../../model/Chart'
 import { IError } from '../../model/Error'
 
 import * as _ from 'lodash'
