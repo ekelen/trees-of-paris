@@ -4,7 +4,6 @@ import * as geolib from 'geolib'
 import * as L from 'leaflet'
 import * as _ from 'lodash'
 import {MAPBOX_API_KEY} from '../../environments/environment'
-import PositionAsDecimal = geolib.PositionAsDecimal
 
 const mapTemplate = 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 const mapOptions: L.TileLayerOptions = {
@@ -14,6 +13,13 @@ const mapOptions: L.TileLayerOptions = {
   id: 'mapbox.streets',
   accessToken: MAPBOX_API_KEY,
 }
+
+const evergreens = ['Juniperus', 'Pinus', 'Picea', 'Thuja', 'Eriobotrya', 'Magnolia', 'Abies']
+
+const flowering = ['Magnolia']
+
+const fruit = ['Malus']
+
 
 @Component({
   selector: 'app-explore-closest',
@@ -50,7 +56,7 @@ export class ExploreClosestComponent implements OnInit {
 
   ngOnInit() {
     if (this.trees.length && this.coordinates) {
-      this.closestTrees = [...this.trees.slice(0, 10)]
+      this.closestTrees = [...this.trees.slice(0, 100)]
     }
     this.distanceClosestTree = this.distanceFromMe(0)
     this.radius = this.distanceFromMe(this.closestTrees.length - 1)
@@ -84,20 +90,25 @@ export class ExploreClosestComponent implements OnInit {
   }
 
   private _drawMyPos = () => {
-    this._addMarker(this.myLat, this.myLon)
+    this._addMarker(this.myLat, this.myLon, 'house')
   }
 
   private _drawTrees = () => {
     this.closestTrees.forEach(tree => {
-      this._addMarker(tree.geometry.coordinates[1], tree.geometry.coordinates[0])
+      console.log(tree.genus)
+      this._addMarker(
+        tree.geometry.coordinates[1],
+        tree.geometry.coordinates[0],
+        evergreens.includes(tree.genus) ? 'evergreen' : null)
     })
   }
 
-  private _addMarker = (lat, lng) => {
+  private _addMarker = (lat, lng, type: string) => {
+    if (!type) { type  = 'deciduous' }
     this.userMarker = L.marker([lat, lng], {
-      icon: L.icon({
-        iconUrl: '../assets/img/marker-icon.png', shadowUrl: '../assets/img/marker-shadow.png'})})
-      .addTo(this.markerLayer);
+    icon: L.icon({
+      iconUrl: `../assets/img/${type}-icon-sm.png`})})
+    .addTo(this.markerLayer);
   }
 
   distanceFromMe(index) { // TODO: Put in utils
