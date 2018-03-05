@@ -52,10 +52,23 @@ function handleError(res, reason = "Server error.", message = reason, code) {
   return res.status(code || 500).json({error: {reason: reason, message: message, code: code}})
 }
 
+// MIDDLEWARE
+checkHeader = function (req, res, next) {
+  if (!req.headers['x-auth']) return handleError(res, "You are not authorized.", null, 401)
+  if (req.headers['x-auth'] !== process.env.ADMIN_KEY) return handleError(res, "You are not authorized.", null, 401)
+  next()
+}
+
 // ROUTES
-// app.get('/init', function(req, res) {
-//   addRecords()
-// })
+app.get('/init', checkHeader, function(req, res) {
+  addRecords()
+})
+app.get('/api/fix_special', checkHeader, function (req, res) {
+ updateSpecial()
+})
+app.get('/api/test_private', checkHeader, (req, res) => {
+  return res.json({message: 'You used the right header.'})
+})
 
 app.get("/api/trees", async function(req, res) {
   const { query } = req
@@ -175,4 +188,17 @@ const addRecords = async() => {
     .then(() => console.log("ok"))
     .catch(err => console.log(err.message))
   }))
+}
+
+const updateSpecial = async() => {
+  request({url: 'http://localhost:8080/static/data/les-arbres.json'})
+    .pipe(JSONStream.parse('*'))
+    .pipe(es.mapSync(async (t) => {
+      await Trees.update(
+        {id: t.recordid},
+        {$set:{notable: !!(+t.fields.remarquable)}}
+      )
+        .then(() => console.log("ok"))
+        .catch(err => console.log(err.message))
+    }))
 }

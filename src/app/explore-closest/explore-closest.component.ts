@@ -69,7 +69,6 @@ export class ExploreClosestComponent implements OnInit {
   }
 
   public initMap = () => {
-    console.log('bounds', this.bounds)
     this._makeLayers()
     this._drawMyPos()
     this._drawTrees()
@@ -96,11 +95,15 @@ export class ExploreClosestComponent implements OnInit {
 
   private _drawTrees = () => {
     this.closestTrees.forEach(tree => {
-      console.log(tree.notable)
+      let iconType = tree.notable ?
+        'notable' :
+        evergreens.includes(tree.genus) ?
+          'evergreen' :
+          null
       this._addMarker(
         tree.geometry.coordinates[1],
         tree.geometry.coordinates[0],
-        evergreens.includes(tree.genus) ? 'evergreen' : null)
+        iconType)
     })
   }
 
