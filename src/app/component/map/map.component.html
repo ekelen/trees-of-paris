@@ -2,10 +2,10 @@
   <div class="d-flex flex-row align-items-center map-nav pb-4">
 
     <div class="d-2">
-      <span id="showArrView" (click)="toggleMapMode($event)" [ngClass]="{'linkStyle': !mapService.show_arrdts}">Choose an arrondissement</span> or
-      <span id="showAddressForm" (click)="toggleMapMode($event)" [ngClass]="{'linkStyle': mapService.show_arrdts}">enter your address</span>.
+      <span id="showArrView" (click)="toggleMapMode($event)" [ngClass]="{'linkStyle': !showArrdts}">Choose an arrondissement</span> or
+      <span id="showAddressForm" (click)="toggleMapMode($event)" [ngClass]="{'linkStyle': showArrdts}">enter your address</span>.
     </div>
-    <div class="d-2 ml-2" *ngIf="!mapService.show_arrdts">
+    <div class="d-2 ml-2" *ngIf="!showArrdts">
       <input id="autocomplete" [(ngModel)]="input" [options]=options (FormatAddress)="getFormattedAddress($event)" angularGooglePlace />
     </div>
     <div class="d-2 ml-2 text-danger" *ngIf="errorMessage">
@@ -14,7 +14,7 @@
     <div class="d-2 ml-auto">
         <div
         class="btn btn-success"
-        [ngClass]="{'disabled': !mapService.user_arrdt && !mapService.user_coordinates}"
+        [ngClass]="{'disabled': !userArrdt && !coordinates}"
         (click)="go($event)" >
           Go
         </div>

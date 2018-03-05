@@ -16,13 +16,22 @@ import * as L from 'leaflet'
   styleUrls: []
 })
 
-export class MapComponent implements AfterViewInit, OnChanges {
+export class MapComponent implements AfterViewInit {
   public options = {type : 'address', componentRestrictions: { country: 'FR' }}
   errorMessage: string = ''
-  hasEnteredValidLocation: boolean = false
+  userArrdt = 0
+  coordinates: [number, number] = null
+  showArrdts: boolean = false
 
   constructor(public mapService: MapService) {
-
+    mapService.mapStore$.subscribe(
+      data => {
+        this.errorMessage = ''
+        this.userArrdt = data.user_arrdt
+        this.coordinates = data.user_coordinates
+        this.showArrdts = data.show_arrdts
+      }
+    )
   }
 
   getFormattedAddress(e: any) {
@@ -35,11 +44,6 @@ export class MapComponent implements AfterViewInit, OnChanges {
     } else {
       this.errorMessage = 'Please enter a valid address within one of the 20 arrondissements.'
     }
-  }
-
-  ngOnChanges() {
-    console.log('changes')
-    if (this.hasEnteredValidLocation) { this.errorMessage = '' }
   }
 
   ngAfterViewInit() {

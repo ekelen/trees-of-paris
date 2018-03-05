@@ -40,11 +40,8 @@ interface MapModel {
 export class MapService {
   private _mapStore: MapModel
 
-  private _user_arrdt$: BehaviorSubject<number>
-  public user_arrdt$: Observable<number>
-
-  private _coordinates$: BehaviorSubject<[number, number]>
-  public coordinates$: Observable<[number, number]>
+  private _mapStore$: BehaviorSubject<MapModel>
+  public mapStore$: Observable<MapModel>
 
   private map: L.Map
   private arrdtLayer: L.FeatureGroup
@@ -55,30 +52,23 @@ export class MapService {
   constructor(
     private http: HttpClient,
     private paramsService: ParamsService) {
+
     this._mapStore = {
       user_arrdt: 0,
       user_coordinates: null,
       show_arrdts: true
     }
 
+    this._mapStore$ = new BehaviorSubject<MapModel>(this._mapStore)
+    this.mapStore$ = this._mapStore$.asObservable()
+
     this.paramsService.params$.subscribe(
       params => {
         this._mapStore.user_arrdt = params.user_arrdt;
         this._mapStore.user_coordinates = params.user_coordinates;
+        this._mapStore$.next(this._mapStore) // new ?
       }
     )
-  }
-
-  get user_arrdt() {
-    return this._mapStore.user_arrdt
-  }
-
-  get user_coordinates() {
-    return this._mapStore.user_coordinates
-  }
-
-  get show_arrdts() {
-    return this._mapStore.show_arrdts
   }
 
   public toggleShowArrdts = () => {
@@ -90,7 +80,6 @@ export class MapService {
   }
 
   public initMap = () => {
-    //console.log('initMap')
     this._makeLayers()
     this._loadArrdts()
   }
@@ -100,8 +89,6 @@ export class MapService {
     this.paramsService.updateArrdt(0)
     this.paramsService.updateCoords(null)
     this.paramsService.toggleUserHasLocation(false)
-    // this._mapStore.user_coordinates = null
-    // this._mapStore.user_arrdt = 0
   }
 
   public search = (lat: number, lng: number) => {
