@@ -16,7 +16,6 @@ var request = require('request')
   , JSONStream = require('JSONStream')
   , es = require('event-stream')
 
-var treeData = "../assets/data/les-arbres.json"
 var treeSchema = require('./src/app/mongoose/Tree.js')
 
 var Trees = mongoose.model('Trees', treeSchema);
@@ -205,7 +204,7 @@ const addNew = () => {
 }
 
 const updateSpecial = async() => {
-  request({url: 'http://localhost:8080/static/data/les-arbres.json'})
+  request({url: 'http://localhost:8080/static/data/lg/les-arbres.json'})
     .pipe(JSONStream.parse('*'))
     .pipe(es.mapSync(async (t) => {
       await Trees.update(

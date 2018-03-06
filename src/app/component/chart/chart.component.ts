@@ -12,6 +12,7 @@ import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'
 import * as __ from '../../util'
+import {SCALAR_VARS} from '../../constants/Data'
 
 @Component({
   selector: 'app-chart',
@@ -64,12 +65,12 @@ export class ChartComponent implements OnInit, OnChanges {
 
   handleToggleIndVarShowAll(showAll: boolean) {
     this.indVarShowAll = showAll
-    if (showAll) { return this._redrawChart() }
+    if (showAll || SCALAR_VARS.includes(this.indVar)) { return this._redrawChart() }
     const { indVar } = this
 
     const popularKeys =
     __.sortUniqs(this.trees, indVar)
-    .slice(0, 20)
+    .slice(0, 19)
     .map(v => v[0])
 
     const filteredData = this.trees.filter(t => popularKeys.includes(t[indVar]))

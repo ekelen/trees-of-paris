@@ -48,7 +48,7 @@ export class TreesService {
     // console.log('2. server friendly params: ', this.paramsService.serverFriendlyParams)
     this.loading = true
 
-    if (environment.useMyTestData) { return this._loadMock() }
+    if (environment.useMyTestData && environment.useMockData) { return this._loadMock() }
     if (environment.useFromLocal) {
       this._loadFromLocal()
       if (this._trees.length) { return }
@@ -74,7 +74,6 @@ export class TreesService {
       err => {
         this.loading = false
         console.error('Server error: ' + err.message || 'Unknown error.')
-        // console.log('getTrees err', err.message)
       }
     )
   }
