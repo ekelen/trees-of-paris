@@ -190,15 +190,14 @@ app.get('/api/init', checkHeader, async function(req, res) {
           height: parseInt(t.fields.hauteurenm)
         })
           .then(() => console.log("ok"))
-          .catch(err => console.log(err.message + '\n'))
+          .catch(err => {})
       }))
-      .pipe(es.wait(() => console.log('FINISHED????')))
       .on('end', () => {
-        console.log('FINISHED')
+        console.log('Sort of the end.')
         resolve('finished')
       })
   })
-    .then((results) => res.json(results))
+    .then((results) => {return res.json(results)})
 
 
 })
