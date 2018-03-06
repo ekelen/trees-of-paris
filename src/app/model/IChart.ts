@@ -4,6 +4,7 @@ import * as assert from "assert"
 
 import {ITree} from './ITree'
 import {SCALAR_VARS} from '../constants/Data'
+import {DGREEN1, LGREEN1, LGREY1} from '../constants/Style'
 
 function getScalar(indVar: string) {
   return (SCALAR_VARS.includes(indVar))
@@ -52,7 +53,7 @@ export function IChart (indVar: string, data: ITree[], subVar?: string | null): 
   const uniqVals = _.uniq(rawValues)
   return {
     // categories: (data) => getCategories(data, indVar),
-    chart: { type: 'column'},
+    chart: { type: 'column', backgroundColor: LGREY1 },
     title: { text: 'Trees'},
     xAxis: {
       title: { text: subVar ? `${indVar} > ${subVar}` : indVar },
@@ -66,6 +67,7 @@ export function IChart (indVar: string, data: ITree[], subVar?: string | null): 
     series: [
       {
         name: 'All trees',
+        color: DGREEN1,
         data: getSerieData(rawValues, subVar)
       }
     ],
