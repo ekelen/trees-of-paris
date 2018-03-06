@@ -69,7 +69,7 @@ export class TreesService {
         // console.log(`- Got ${trees.length} trees from server.`)
         this._trees = [...trees]
         this._trees$.next([...trees])
-        if (trees.length < 10000 && !environment.production) { localStorage.setItem('trees', JSON.stringify(trees)) }
+        if (trees.length < 10000 && !environment.useFromLocal) { localStorage.setItem('trees', JSON.stringify(trees)) }
       },
       err => {
         this.loading = false

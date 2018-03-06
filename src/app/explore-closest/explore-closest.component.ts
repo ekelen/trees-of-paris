@@ -4,6 +4,7 @@ import * as geolib from 'geolib'
 import * as L from 'leaflet'
 import * as _ from 'lodash'
 import {MAPBOX_API_KEY} from '../../environments/environment'
+import {evergreens, flowering, fruit} from '../constants/Biology'
 
 const mapTemplate = 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 const mapOptions: L.TileLayerOptions = {
@@ -13,13 +14,6 @@ const mapOptions: L.TileLayerOptions = {
   id: 'mapbox.streets',
   accessToken: MAPBOX_API_KEY,
 }
-
-const evergreens = ['Juniperus', 'Pinus', 'Picea', 'Thuja', 'Eriobotrya', 'Magnolia', 'Abies']
-
-const flowering = ['Magnolia']
-
-const fruit = ['Malus']
-
 
 @Component({
   selector: 'app-explore-closest',
@@ -105,7 +99,7 @@ export class ExploreClosestComponent implements OnInit {
         'notable' :
         evergreens.includes(tree.genus) ?
           'evergreen' :
-          null
+          undefined
       this._addMarker(
         tree.geometry.coordinates[1],
         tree.geometry.coordinates[0],
@@ -114,9 +108,7 @@ export class ExploreClosestComponent implements OnInit {
     })
   }
 
-  private _addMarker = (lat, lng, type: string, popupContent: any = null) => {
-    if (!type) { type  = 'deciduous' }
-    if (!popupContent) { popupContent = null }
+  private _addMarker = (lat, lng, type: string = 'deciduous', popupContent: any = null) => {
     let marker = L.marker([lat, lng], {
     icon: L.icon({
       iconUrl: `../assets/img/${type}-icon-sm.png`})})

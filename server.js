@@ -46,8 +46,6 @@ var server = app.listen(process.env.PORT || 8080, function () {
   console.log("Tree Server now running on port", port);
 })
 
-server.timeout = 24000
-
 // Generic error handler used by all endpoints.
 function handleError(res, reason = "Server error.", message = reason, code) {
   console.log("handleError: " + reason);
@@ -61,11 +59,19 @@ checkHeader = function (req, res, next) {
   next()
 }
 
-
-
-app.get('/api/fix_special', checkHeader, function (req, res) {
- updateSpecial()
+// ROUTES
+app.get('/api/init', checkHeader, async function(req, res) {
+  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 180000)
+  const results = await addNew()
+  return res.json(results)
 })
+
+app.get('/api/fix_special', checkHeader, async function (req, res) {
+  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 180000)
+  const results = await updateSpecial()
+  return res.json(results)
+})
+
 app.get('/api/test_private', checkHeader, (req, res) => {
   return res.json({message: 'You used the right header.'})
 })
@@ -104,7 +110,7 @@ app.use(express.static(distDir));
 
 
 // CONTROLLERS
-const formatGeoSearch = (lnglat, distance = 200) => {
+const formatGeoSearch = (lnglat, distance = 250) => {
   let geoQuery = {}
   let geoPt = {
     type: "Point",
@@ -155,7 +161,7 @@ function Search (query) {
         this[k] = Util.toNum(query[k])
     }
     else if (k === "geometry") {
-      this['geometry'] = formatGeoSearch(Util.toLngLat(query[k]))
+      this['geometry'] = formatGeoSearch(Util.toLngLat(query[k]), query['distance'] ? +query['distance'] : undefined)
     }
   }
 }
@@ -168,12 +174,11 @@ function Options (query) {
   }
 }
 
-// ROUTES
-app.get('/api/init', checkHeader, async function(req, res) {
-  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 23900)
 
-  await new Promise(resolve => {
-    return request({url: 'http://localhost:8080/static/data/lg/betulus-arbres.json'})
+
+const addNew = () => {
+  return new Promise(resolve => {
+    return request({url: 'http://localhost:8080/static/data/lg/les-arbres.json'})
       .pipe(JSONStream.parse('*'))
       .pipe(es.mapSync(async (t) => {
         await Trees.create({
@@ -197,14 +202,6 @@ app.get('/api/init', checkHeader, async function(req, res) {
         resolve('finished')
       })
   })
-    .then((results) => {return res.json(results)})
-
-
-})
-
-const addRecords = async() => {
-  // request({url: 'http://localhost:8080/static/data/les-arbres.json'})
-
 }
 
 const updateSpecial = async() => {
@@ -218,4 +215,5 @@ const updateSpecial = async() => {
         .then(() => console.log("ok"))
         .catch(err => console.log(err.message))
     }))
+    .then(() => ('This will not work, need request-promise.'))
 }
