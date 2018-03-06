@@ -1,13 +1,12 @@
 import * as _ from "lodash"
 import * as __ from "../util"
-
-//import { Options } from "angular-highcharts"
 import * as assert from "assert"
 
-import { ITree } from './ITree'
+import {ITree} from './ITree'
+import {SCALAR_VARS} from '../constants/Data'
 
 function getScalar(indVar: string) {
-  return (["height", "circumference"].includes(indVar))
+  return (SCALAR_VARS.includes(indVar))
 }
 
 function getUniqueVals (data, indVar) {
@@ -76,8 +75,4 @@ export function IChart (indVar: string, data: ITree[], subVar?: string | null): 
   }
 }
 
-// CONSTANTS
 
-export const INDVARS: string[] = [
-  'species', 'genus', 'commonName', 'fullName', 'street',
-  'arrondissement', 'distance', 'usage', 'circumference', 'height']
