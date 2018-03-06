@@ -20,8 +20,8 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject'
   <div *ngIf="paramError" class="jumbotron">{{ errorMessage }}</div>
   <app-loading *ngIf=treeService.loading></app-loading>
     <p *ngIf="!treeService.loading">There are {{trees.length}} valid trees
-      <span *ngIf="coordinates">within 250m of where you live. <span *ngIf="viewChart && hasCoords && trees.length" class="linkStyle" (click)="goClosest()">See more »</span></span>
-      <span *ngIf="!coordinates">in your arrondissement.</span>
+      <span *ngIf="hasCoords">within 250m of where you live. <span *ngIf="viewChart && hasCoords && trees.length" class="linkStyle" (click)="goClosest()">See more »</span></span>
+      <span *ngIf="!hasCoords">in your arrondissement.</span>
       <span *ngIf="!trees.length" class="linkStyle">« Try new location</span></p>
   <app-explore-closest *ngIf="!treeService.loading && !noTreesFound && hasCoords && !viewChart" 
                        [trees]=trees 
