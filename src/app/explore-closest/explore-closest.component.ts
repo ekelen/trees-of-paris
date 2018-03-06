@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core'
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core'
 import {ITree} from '../model/ITree'
 import * as geolib from 'geolib'
 import * as L from 'leaflet'
@@ -47,9 +47,11 @@ export class ExploreClosestComponent implements OnInit {
     }
     get coordinates(): [number, number] { return this.myLat && this.myLon ? [this.myLat, this.myLon] : null }
 
+  @Output() goChart: EventEmitter<boolean> = new EventEmitter<boolean>()
+
+
   private map: L.Map
   private streetsLayer: L.TileLayer
-  private userMarker: L.Marker
   private markerLayer: L.FeatureGroup
 
   constructor() {}
@@ -57,7 +59,7 @@ export class ExploreClosestComponent implements OnInit {
   ngOnInit() {
     if (this.trees.length && this.coordinates) {
       // trees are already ordered by distance (mongoDb $nearSphere search)
-      this.closestTrees = [...this.trees.slice(0, 100)]
+      this.closestTrees = [...this.trees.slice(0, 20)]
     }
     this.distanceClosestTree = this.distanceFromMe(0)
     this.radius = this.distanceFromMe(this.closestTrees.length - 1)
@@ -72,6 +74,10 @@ export class ExploreClosestComponent implements OnInit {
     this._makeLayers()
     this._drawMyPos()
     this._drawTrees()
+  }
+
+  public clickGoChart() {
+    this.goChart.emit(false)
   }
 
   private _makeLayers = () => {

@@ -11,6 +11,7 @@ import { IError } from '../../model/Error'
 
 import * as _ from 'lodash'
 import * as __ from '../../util'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 
 @Component({
   selector: 'app-trees',
@@ -18,10 +19,13 @@ import * as __ from '../../util'
   <div class="container mt-5 pt-5">
   <div *ngIf="paramError" class="jumbotron">{{ errorMessage }}</div>
   <app-loading *ngIf=treeService.loading></app-loading>
-    <p *ngIf="!treeService.loading">There are {{trees.length}} verified trees
-      <span *ngIf="coordinates">within 300m of where you live</span>
-      <span *ngIf="!coordinates">in your arrondissement</span>.</p>
-  <app-explore-closest *ngIf="!treeService.loading && !noTreesFound && hasCoords" [trees]=trees [coordinates]=coordinates></app-explore-closest>
+    <p *ngIf="!treeService.loading">There are {{trees.length}} valid trees
+      <span *ngIf="coordinates">within 300m of where you live. <span class="linkStyle" (click)="goClosest()">See more »</span></span>
+      <span *ngIf="!coordinates">in your arrondissement</span></p>
+  <app-explore-closest *ngIf="!treeService.loading && !noTreesFound && hasCoords && !viewChart" 
+                       [trees]=trees 
+                       [coordinates]=coordinates
+                        (goChart)="onGoChart()"></app-explore-closest>
   <app-chart *ngIf="!treeService.loading && !noTreesFound && viewChart" [trees]=trees></app-chart>
   </div>
   `
@@ -72,6 +76,14 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
 
     treeService.getTrees()
     subs.forEach(sub => this.subscriptions.push(sub))
+  }
+
+  public goClosest = () => {
+    this.viewChart = false
+  }
+
+  public onGoChart = () => {
+    this.viewChart = true
   }
 
   ngAfterViewInit() { }

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+//TODO fix notable
+//TODO fix required so more trees are included
 const treeSchema = new mongoose.Schema({
   id: { "type": String, index: true, unique: true, required: true },
   species: { "type": String, required: true },
