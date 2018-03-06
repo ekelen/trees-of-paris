@@ -4,7 +4,7 @@ import * as math from "mathjs"
 
 import * as assert from "assert"
 import { ITree } from '../../model/ITree'
-import { IChart } from '../../model/Chart'
+import { IChart } from '../../model/IChart'
 
 import { TreesService } from '../../service/trees.service';
 

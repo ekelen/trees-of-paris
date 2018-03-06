@@ -45,7 +45,7 @@ function getSerieDrillDown(treeData: ITree[], indVar, subVar, uniqVals) {
   return serieData
 }
 
-export function IChart (indVar: string, data: ITree[], subVar?: string | null):any {
+export function IChart (indVar: string, data: ITree[], subVar?: string | null): any {
   assert(data.length, 'data has no length.')
 
   // Is it better to carry these values around, or recalculate each time?
