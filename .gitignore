@@ -3,8 +3,7 @@
 
 # large files
 src/assets/img/jace-grandinetti_orig_g2fycc/
-src/assets/data/les-arbres.json
-src/assets/data/nearme.ts
+src/assets/data/lg/
 
 # sensitive
 src/environments/environment.ts
