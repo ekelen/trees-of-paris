@@ -46,6 +46,8 @@ var server = app.listen(process.env.PORT || 8080, function () {
   console.log("Tree Server now running on port", port);
 })
 
+server.timeout = 24000
+
 // Generic error handler used by all endpoints.
 function handleError(res, reason = "Server error.", message = reason, code) {
   console.log("handleError: " + reason);
@@ -59,10 +61,8 @@ checkHeader = function (req, res, next) {
   next()
 }
 
-// ROUTES
-app.get('/init', checkHeader, function(req, res) {
-  addRecords()
-})
+
+
 app.get('/api/fix_special', checkHeader, function (req, res) {
  updateSpecial()
 })
@@ -168,8 +168,20 @@ function Options (query) {
   }
 }
 
+// ROUTES
+app.get('/api/init', checkHeader, function(req, res) {
+  setTimeout(() => res.send('Time out.'), 24000)
+  const stream = addRecords()
+  stream.on('end', () => {
+    console.log('FINISHED')
+    res.json('finished.')
+  })
+
+})
+
 const addRecords = async() => {
-  request({url: 'http://localhost:8080/static/data/les-arbres.json'})
+  // request({url: 'http://localhost:8080/static/data/les-arbres.json'})
+  return request({url: 'http://localhost:8080/static/data/30k_trees_cim.json'})
   .pipe(JSONStream.parse('*'))
   .pipe(es.mapSync(async (t) => {
     await Trees.create({
@@ -180,14 +192,15 @@ const addRecords = async() => {
       street: t.fields.adresse.toLowerCase(),
       arrondissement: parseInt(t.fields.arrondissement.split('').filter(c => c >= '0' && c <= '9').join('')),
       geometry: t.geometry,
-      notable: !!t.fields.remarquable,
+      notable: !!(+t.fields.remarquable),
       usage: t.fields.domanialite.toLowerCase(),
       circumference: parseInt(t.fields.circonferenceencm),
       height: parseInt(t.fields.hauteurenm)
     })
     .then(() => console.log("ok"))
-    .catch(err => console.log(err.message))
+    .catch(err => console.log(err.message + '\n'))
   }))
+    .end()
 }
 
 const updateSpecial = async() => {

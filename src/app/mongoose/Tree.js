@@ -15,7 +15,7 @@ const treeSchema = new mongoose.Schema({
   usage: { "type": String, required: true },
   circumference: { "type": Number, required: true, min: 1, max: 335},
   height: { "type": Number, required: true, max: 40 },
-}, {collection: 'sandbox'});
+}, {collection: 'arbres'});
 
 treeSchema.virtual('fullName').get(function () {
   return this.genus + ' ' + this.species;
