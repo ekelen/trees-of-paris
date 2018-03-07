@@ -3,9 +3,8 @@ import * as __ from "../util"
 import * as assert from "assert"
 
 import {ITree} from './ITree'
-import {CONTINUOUS_VARS} from '../constants/Data'
+import {CONTINUOUS_VARS} from '../constants/Visualization'
 import {DGREEN1, LGREEN1, LGREY1} from '../constants/Style'
-import Timer = NodeJS.Timer
 
 const isContinuous = (input: string) => CONTINUOUS_VARS.includes(input)
 const x = (pair: [any, any]) => pair[0]
@@ -14,13 +13,14 @@ const rawBy = (trees, input) => trees.map(t => t[input])
 const uniq = (arr) => _.uniq(arr)
 const uniqBy = (trees, input) => _.uniq(rawBy(trees, input))
 const sortPairsByFrequency = pairs => pairs.sort((a, b) => (y(b) - y(a)))
+const getBinSize = (pairs, interval) => Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
 
 function getBins(pairs, interval = 20) {
-  const binSize = Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
+  const binSize = getBinSize(pairs, interval)
+
   const bins = Array.from(new Array(interval), (v, i) => Math.ceil((i + 1) * binSize))
-  assert(bins.length * binSize >= _.max(pairs.map(p => +x(p))), `${bins.length} (length) * binsize ${binSize} is smaller than max value.`)
+  assert(_.last(bins) >= _.max(pairs.map(p => +x(p))), `last bin ${_.last(bins)} is smaller than max value.`)
   assert(isInBin(_.max(pairs.map(p => +x(p))), _.last(bins), bins), `${_.max(pairs.map(p => +x(p)))} is not in last bin ${_.last(bins)}`)
-  //assert(_.max(pairs.map(p => +x(p)) > (bins.length - 2) * binSize), `max ${_.max(pairs.map(p => +x(p)))} is smaller than second-largest bin, ${bins[bins.length - 2]}`)
   return bins
 }
 
@@ -50,7 +50,7 @@ function getInput1Sseries(trees, input1, input2 = null) {
   const serieData = isContinuous(input1) ? reduceContinuousPairs(pairs) : sortPairsByFrequency(pairs)
   return serieData
     .map(p => {
-    return {y: p[1], name: p[0], drilldown: input2 ? _.toString(p[0]) : null}
+    return {y: p[1], name: p[0], drilldown: input2 ? `${p[0]}` : null}
   })
 }
 
@@ -59,8 +59,6 @@ const isInBin = (val, bin, bins) => {
 }
 
 function getInput2Series(trees, input1, input2) {
-
-  console.log(`calling getInput2Series for ${input1} > ${input2}`)
 
   const bins = isContinuous(input1) ? getBins(__.toCountPairs(rawBy(trees, input1))) : null
 
@@ -94,9 +92,7 @@ function getInput2Series(trees, input1, input2) {
 
 export function IChart (input1: string, trees: ITree[], input2?: string | null): any {
   console.time('IChart')
-  assert(trees.length, 'data has no length.')
-  console.log(input1, input2)
-  setTimeout(() => { throw new Error('timeout') }, 1000)
+  setTimeout(() => { throw new Error('timeout') }, 3000)
   const data = getInput1Sseries(trees, input1, input2)
   const drilldownData = getInput2Series(trees, input1, input2)
   console.timeEnd('IChart')

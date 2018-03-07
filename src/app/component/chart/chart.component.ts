@@ -1,6 +1,4 @@
-import { Component, AfterViewInit, OnInit, Input, OnChanges  } from '@angular/core';
-import * as Rx from 'rxjs/Rx';
-import * as math from "mathjs"
+import { Component, AfterViewInit, OnInit, Input, OnChanges, OnDestroy  } from '@angular/core';
 
 import * as assert from "assert"
 import { ITree } from '../../model/ITree'
@@ -12,7 +10,7 @@ import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'
 import * as __ from '../../util'
-import {CONTINUOUS_VARS} from '../../constants/Data'
+import {CONTINUOUS_VARS} from '../../constants/Visualization'
 import {environment} from '../../../environments/environment'
 
 @Component({
@@ -30,11 +28,10 @@ import {environment} from '../../../environments/environment'
     </div>
   `
 })
-export class ChartComponent implements OnInit, OnChanges {
+export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() trees: ITree[]
   chartOptions: any = {}
   chart: any
-
 
   input1: string
   input2: string
@@ -57,6 +54,9 @@ export class ChartComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this._redrawChart()
+  }
+
+  ngOnDestroy() {
   }
 
   handleIndVarUpdated(indVar) {
@@ -88,4 +88,6 @@ export class ChartComponent implements OnInit, OnChanges {
     this.chartOptions = IChart(this.input1, this.trees, this.input2)
     this.chart = new Chart(this.chartOptions);
   }
+
+
 }

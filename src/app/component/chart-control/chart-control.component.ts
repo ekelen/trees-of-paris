@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { NgForm } from '@angular/forms';
 
 import { ITree } from '../../model/ITree'
-import { INDVARS } from '../../constants/Data'
+import { INDVARS } from '../../constants/Visualization'
 
 // import * as H from 'highcharts'
 import { Chart } from 'angular-highcharts';
