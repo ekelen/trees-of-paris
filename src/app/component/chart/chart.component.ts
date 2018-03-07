@@ -12,7 +12,7 @@ import { Chart } from 'angular-highcharts';
 
 import * as _ from 'lodash'
 import * as __ from '../../util'
-import {SCALAR_VARS} from '../../constants/Data'
+import {CONTINUOUS_VARS} from '../../constants/Data'
 
 @Component({
   selector: 'app-chart',
@@ -65,7 +65,7 @@ export class ChartComponent implements OnInit, OnChanges {
 
   handleToggleIndVarShowAll(showAll: boolean) {
     this.indVarShowAll = showAll
-    if (showAll || SCALAR_VARS.includes(this.indVar)) { return this._redrawChart() }
+    if (showAll || CONTINUOUS_VARS.includes(this.indVar)) { return this._redrawChart() }
     const { indVar } = this
 
     const popularKeys =

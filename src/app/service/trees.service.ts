@@ -30,6 +30,7 @@ export class TreesService {
 
   private _loadFromLocal = () => {
     if (localStorage.getItem('trees')) {
+      console.log('loading trees from local')
       this._trees = JSON.parse(localStorage.getItem('trees'))
       this._trees$.next(this._trees)
       this.loading = false
