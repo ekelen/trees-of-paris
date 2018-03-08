@@ -12,6 +12,7 @@ const y = (pair: [any, any]) => pair[1]
 const rawBy = (trees, input) => trees.map(t => t[input])
 const uniq = (arr) => _.uniq(arr)
 const uniqBy = (trees, input) => _.uniq(rawBy(trees, input))
+const toCountPairs = (vals: string[] | number[] | null):any[][] => (_.toPairs(_.countBy(vals)))
 
 function Bin (trees, nBins) {
   this.trees = trees // just a reference so it's ok
@@ -23,7 +24,7 @@ Bin.prototype.setInput = function(input: string) {
   if (!this.nBins) throw new Error('Bin input functions must have tree data.')
   this.input = input
   this.rawVals = rawBy(this.trees, input)
-  this.rawPairs = __.toCountPairs(this.rawVals)
+  this.rawPairs = toCountPairs(this.rawVals)
   this.max = _.max(this.rawVals)
   this.binSize = Math.ceil(_.max(this.rawVals) / this.nBins)
   this.bins = Array.from(new Array(this.nBins), (v, i) => ((i + 1) * this.binSize))
@@ -73,7 +74,7 @@ function reduceContinuousPairs(pairs, interval = 20) {
 
 function getInput1Sseries(trees, input1, input2 = null, binData) {
   if (isContinuous(input1)) binData.setInput(input1)
-  const pairs = __.toCountPairs(rawBy(trees, input1))
+  const pairs = toCountPairs(rawBy(trees, input1))
   const serieData = isContinuous(input1) ? reduceContinuousPairs(pairs) : sortPairsByFrequency(pairs)
   const serieData2 = isContinuous(input1) ? binData.reducedPairs : sortPairsByFrequency(pairs)
   //assert.deepEqual(serieData, serieData2, 'Not equal, debug.')
@@ -87,7 +88,7 @@ function getInput1Sseries(trees, input1, input2 = null, binData) {
 
 function getInput2Series(trees, input1, input2) {
 
-  const bins = isContinuous(input1) ? getBins(__.toCountPairs(rawBy(trees, input1))) : null
+  const bins = isContinuous(input1) ? getBins(toCountPairs(rawBy(trees, input1))) : null
 
   const ids = isContinuous(input1) ?
     bins :
@@ -100,7 +101,7 @@ function getInput2Series(trees, input1, input2) {
   }
 
   const serieData = ids.map(id => {
-    const pairs = __.toCountPairs(getInput2PerInput1(id))
+    const pairs = toCountPairs(getInput2PerInput1(id))
     // console.log("pairs", pairs)
     const serieData = isContinuous(input2) ? reduceContinuousPairs(pairs) : pairs
     const seriesObj = {
