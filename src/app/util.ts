@@ -29,7 +29,7 @@ export const pull = (data: any[], key: string, condition?: any): string[] | numb
   return data.filter(d => !_.isUndefined(d[key]) && condition(d)).map(d => d[key])
 }
 
-export const toggleItem = (array, item):any[] => {
+export const toggleItem = (array, item): any[] => {
   return array.includes(item) ? array.filter(v => v !== item) : [...array, item]
 }
 

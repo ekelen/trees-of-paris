@@ -12,12 +12,14 @@ const y = (pair: [any, any]) => pair[1]
 const rawBy = (trees, input) => trees.map(t => t[input])
 const uniq = (arr) => _.uniq(arr)
 const uniqBy = (trees, input) => _.uniq(rawBy(trees, input))
+
+
 const sortPairsByFrequency = pairs => pairs.sort((a, b) => (y(b) - y(a)))
 const getBinSize = (pairs, interval) => Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
+const isInBin = (val, bin, bins) => (_.sortedIndex(bins, val) === bins.indexOf(bin))
 
 function getBins(pairs, interval = 20) {
   const binSize = getBinSize(pairs, interval)
-
   const bins = Array.from(new Array(interval), (v, i) => Math.ceil((i + 1) * binSize))
   assert(_.last(bins) >= _.max(pairs.map(p => +x(p))), `last bin ${_.last(bins)} is smaller than max value.`)
   assert(isInBin(_.max(pairs.map(p => +x(p))), _.last(bins), bins), `${_.max(pairs.map(p => +x(p)))} is not in last bin ${_.last(bins)}`)
@@ -40,7 +42,6 @@ function reduceContinuousPairs(pairs, interval = 20) {
     return [b, binContents]
   })
   return reducedPairs
-    // .sort((a, b) => x(a) - x(b)) // bins already sorted
 }
 
 
@@ -54,9 +55,7 @@ function getInput1Sseries(trees, input1, input2 = null) {
   })
 }
 
-const isInBin = (val, bin, bins) => {
-  return (_.sortedIndex(bins, val) === bins.indexOf(bin))
-}
+
 
 function getInput2Series(trees, input1, input2) {
 
