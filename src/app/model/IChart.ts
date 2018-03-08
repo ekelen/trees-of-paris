@@ -13,6 +13,19 @@ const rawBy = (trees, input) => trees.map(t => t[input])
 const uniq = (arr) => _.uniq(arr)
 const uniqBy = (trees, input) => _.uniq(rawBy(trees, input))
 
+function Bin (trees, nBins) {
+  this.trees = trees // just a reference so it's ok
+  this.nBins = nBins
+}
+
+Bin.prototype.setInput = function(input: string) {
+  if (!this.trees) throw new Error('Bin input functions must have tree data.')
+  if (!this.nBins) throw new Error('Bin input functions must have tree data.')
+  this.input = input
+  this.rawBy = rawBy(this.trees, input)
+  this.rawPairs = __.toCountPairs(this.rawVals)
+  this.binSize = Math.max(this.rawPairs.map(p => +x(p))) / this.nBins
+}
 
 const sortPairsByFrequency = pairs => pairs.sort((a, b) => (y(b) - y(a)))
 const getBinSize = (pairs, interval) => Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
