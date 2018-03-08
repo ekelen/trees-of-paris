@@ -22,9 +22,23 @@ Bin.prototype.setInput = function(input: string) {
   if (!this.trees) throw new Error('Bin input functions must have tree data.')
   if (!this.nBins) throw new Error('Bin input functions must have tree data.')
   this.input = input
-  this.rawBy = rawBy(this.trees, input)
+  this.rawVals = rawBy(this.trees, input)
   this.rawPairs = __.toCountPairs(this.rawVals)
-  this.binSize = Math.max(this.rawPairs.map(p => +x(p))) / this.nBins
+  this.max = _.max(this.rawVals)
+  this.binSize = Math.ceil(_.max(this.rawVals) / this.nBins)
+  this.bins = Array.from(new Array(this.nBins), (v, i) => ((i + 1) * this.binSize))
+  this.binnedPairs = this.rawPairs.map(p => {
+    const i = _.sortedIndex(this.bins, +x(p))
+    return [this.bins[i], y(p)]
+  })
+  this.isInBin = function(bin, val) { return _.sortedIndex(this.bins, val) === this.bins.indexOf(bin)}
+  this.reducedPairs = this.bins.map(b => {
+    const binContents = this.binnedPairs
+      .filter(p => +x(p) === b)
+      .map(p => y(p))
+      .reduce((acc, cur) => acc + cur, 0)
+    return [b, binContents]
+  })
 }
 
 const sortPairsByFrequency = pairs => pairs.sort((a, b) => (y(b) - y(a)))
@@ -33,9 +47,7 @@ const isInBin = (val, bin, bins) => (_.sortedIndex(bins, val) === bins.indexOf(b
 
 function getBins(pairs, interval = 20) {
   const binSize = getBinSize(pairs, interval)
-  const bins = Array.from(new Array(interval), (v, i) => Math.ceil((i + 1) * binSize))
-  assert(_.last(bins) >= _.max(pairs.map(p => +x(p))), `last bin ${_.last(bins)} is smaller than max value.`)
-  assert(isInBin(_.max(pairs.map(p => +x(p))), _.last(bins), bins), `${_.max(pairs.map(p => +x(p)))} is not in last bin ${_.last(bins)}`)
+  const bins = Array.from(new Array(interval), (v, i) => ((i + 1) * Math.ceil(binSize)))
   return bins
 }
 
@@ -59,12 +71,15 @@ function reduceContinuousPairs(pairs, interval = 20) {
 
 
 
-function getInput1Sseries(trees, input1, input2 = null) {
+function getInput1Sseries(trees, input1, input2 = null, binData) {
+  if (isContinuous(input1)) binData.setInput(input1)
   const pairs = __.toCountPairs(rawBy(trees, input1))
   const serieData = isContinuous(input1) ? reduceContinuousPairs(pairs) : sortPairsByFrequency(pairs)
+  const serieData2 = isContinuous(input1) ? binData.reducedPairs : sortPairsByFrequency(pairs)
+  //assert.deepEqual(serieData, serieData2, 'Not equal, debug.')
   return serieData
     .map(p => {
-    return {y: p[1], name: p[0], drilldown: input2 ? `${p[0]}` : null}
+    return {y: p[1], name: `${p[0]}`, drilldown: input2 ? `${p[0]}` : null}
   })
 }
 
@@ -104,10 +119,12 @@ function getInput2Series(trees, input1, input2) {
 
 export function IChart (input1: string, trees: ITree[], input2?: string | null): any {
   console.time('IChart')
-  setTimeout(() => { throw new Error('timeout') }, 3000)
-  const data = getInput1Sseries(trees, input1, input2)
+  const binData = new Bin(trees, 20)
+  let chartTimer = setTimeout(() => { throw new Error('timeout') }, 3000)
+  const data = getInput1Sseries(trees, input1, input2, binData)
   const drilldownData = getInput2Series(trees, input1, input2)
   console.timeEnd('IChart')
+  global.clearTimeout(chartTimer)
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },
     title: { text: 'Trees'},
