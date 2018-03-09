@@ -121,11 +121,10 @@ function getInput2Series(trees, input1, input2) {
 export function IChart (input1: string, trees: ITree[], input2?: string | null): any {
   console.time('IChart')
   const binData = new Bin(trees, 20)
-  let chartTimer = setTimeout(() => { throw new Error('timeout') }, 3000)
+  // let chartTimer = setTimeout(() => { throw new Error('timeout') }, 3000)
   const data = getInput1Sseries(trees, input1, input2, binData)
   const drilldownData = getInput2Series(trees, input1, input2)
   console.timeEnd('IChart')
-  global.clearTimeout(chartTimer)
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },
     title: { text: 'Trees'},
