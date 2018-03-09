@@ -45,15 +45,15 @@ const reducedPairs = (bins: number[], binnedPairs: NumPair[]): NumPair[] => (
     return<NumPair>[b, binContents]
   })
 )
-
-const filterByCat = (trees, input, id) => trees.filter(t => t[input] === id)
+const filterByCat = (trees, input, bins, id) => trees.filter(t => t[input] === id)
 const filterByBin = (trees, input, bins, bin) => trees.filter(t => isInBin(+t[input], bin, bins))
+
 
 function setIds() {
   return ('bins' in this) ? this.bins : this.cats
 }
 
-export class DataStore implements Store {
+class DataStore implements Store {
   public contInput1
   public contInput2
 
@@ -98,69 +98,41 @@ function PrimarySeries(store: DataStore) {
 }
 
 
-// function getDrilldown(id: number|string) {
-//   const treeGroup = filterByBin(this.trees, this.input1, this.bins, id)
-//   let serieData
-//   if (treeGroup.length) {
-//     let serie = this.contInput2 ? new LinearSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)  :
-//       new NomSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)
-//     serieData = serie.seriePairs
-//   }
-//   return {
-//     data: serieData,
-//     id: id
-//   }
-// }
-//
-// function getNomDrilldown(id: string) {
-//   const treeGroup = filterByCat(this.trees, this.input1, id)
-//   let serieData
-//   if (treeGroup.length) {
-//     let serie = this.contInput2 ? new LinearSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)  :
-//       new NomSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)
-//     console.log(serie)
-//     serieData = serie.seriePairs
-//   }
-//   return !treeGroup.length ? null :
-//     {
-//       data: serieData,
-//       id: id
-//     }
-// }
-//
-// function sortDrilldown() {
-//   if (this.contInput1) {
-//     return this.ids.map(id => getDrilldown.call(this, +id))
-//   }
-//   else if (!this.contInput1) {
-//     return this.ids.map(id => getNomDrilldown.call(this, id))
-//       .filter(dat => !!dat)
-//   }
-// }
-//
-// function SecondarySeries(trees, nBins, input1, input2) {
-//   if (!input2) return
-//   PrimarySeries.call(this, ...Array.from(arguments))
-//   const secondarySeries = sortDrilldown.call(this)
-//   this.secondSeries = secondarySeries.map(dat => ({
-//       id: `${dat.id}`,
-//       name: `${dat.id}`,
-//       data: dat.data
-//     })
-//   )
-//
-// }
+function getDrilldown(id: number|string, filterfn) {
+  const treeGroup = filterfn(this.trees, this.input1, this.bins, id)
+  if (!treeGroup) return null
+    let serie = this.contInput2 ?
+      new LinearSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)  :
+      new NomSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)
+    return {
+      data: serie.seriePairs,
+      id: id
+    }
+}
+
+function sortDrilldown() {
+  const filterfn = this.contInput1 ? filterByBin : filterByCat
+  return this.ids.map(id => getDrilldown.call(this, +id, filterfn))
+}
+
+function SecondarySeries(trees, nBins, input1, input2) {
+  if (!input2) return
+  PrimarySeries.call(this, ...Array.from(arguments))
+  const secondarySeries = sortDrilldown.call(this)
+  this.secondSeries = secondarySeries.map(dat => ({
+      id: `${dat.id}`,
+      name: `${dat.id}`,
+      data: dat.data
+    })
+  )
+
+}
 
 export function IChart (input1: string, trees: ITree[], input2?: string | null): any {
   console.time('IChart')
   const myData = new DataStore(trees, 20, input1, input2)
-  console.log(trees)
   const primarySeries = new PrimarySeries(myData)
-  console.log(primarySeries.data)
-  // const binData = new Bin(trees, 20)
-  // let chartTimer = setTimeout(() => { throw new Error('timeout') }, 3000)
-  // const data = getInput1Sseries(trees, input1, input2, binData)
-  // const drilldownData = getInput2Series(trees, input1, input2)
+  const secondarySeries = input2 ? new SecondarySeries(trees, 20, input1, input2) : null
   console.timeEnd('IChart')
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },
