@@ -6,13 +6,46 @@ import {ITree} from './ITree'
 import {CONTINUOUS_VARS} from '../constants/Visualization'
 import {DGREEN1, LGREEN1, LGREY1} from '../constants/Style'
 
-const isContinuous = (input: string) => CONTINUOUS_VARS.includes(input)
-const x = (pair: [any, any]) => pair[0]
-const y = (pair: [any, any]) => pair[1]
-const rawBy = (trees, input) => trees.map(t => t[input])
-const uniq = (arr) => _.uniq(arr)
-const uniqBy = (trees, input) => _.uniq(rawBy(trees, input))
-const toCountPairs = (vals: string[] | number[] | null):any[][] => (_.toPairs(_.countBy(vals)))
+const isContinuous = (input: string): boolean => CONTINUOUS_VARS.includes(input)
+
+type X = number | string
+type Y = number
+type Input = string
+type NumPair = [number, Y]
+type Pair = [X, Y]
+
+interface Store {
+  trees: ITree[],
+  nBins: number,
+  input1: Input,
+  input2: Input
+}
+
+const x = (pair: Pair): X => pair[0]
+const y = (pair: Pair): Y => pair[1]
+const rawBy = (trees: ITree[], input: Input): X[] => trees.map(t => t[input])
+const uniqBy = (trees: ITree[], input: Input): X[] => _.uniq(rawBy(trees, input))
+const toCountPairs = (vals: X[] | null): Pair => _.toPairs(_.countBy(vals))
+const sortPairsByFrequency = (pairs: Pair[]): Pair[] => pairs.sort((a, b) => (y(b) - y(a)))
+
+const max = (vals: number[]): number => _.max(vals)
+const isInBin = (val: number, bin: number, bins: number[]): boolean => (_.sortedIndex(bins, val) === bins.indexOf(bin))
+const getBinSize = (pairs: Pair[], interval: number): number => Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
+const binSize = (max: number, nBins: number): number => Math.ceil(max / nBins)
+const bins = (nBins: number, binSize: number): number[] => Array.from(new Array(nBins), (v, i) => ((i + 1) * binSize))
+const binnedPairs = (rawPairs: Pair[], bins: number[]): NumPair[] => rawPairs.map(p => {
+  const i = _.sortedIndex(bins, +x(p))
+  return <NumPair>[bins[i], y(p)]
+})
+const reducedPairs = (bins: number[], binnedPairs: NumPair[]): NumPair[] => (
+  bins.map(b => {
+    const binContents = binnedPairs
+      .filter(p => +x(p) === b)
+      .map(p => y(p))
+      .reduce((acc, cur) => acc + cur, 0)
+    return<NumPair>[b, binContents]
+  })
+)
 
 function Bin (trees, nBins) {
   this.trees = trees // just a reference so it's ok
@@ -42,9 +75,8 @@ Bin.prototype.setInput = function(input: string) {
   })
 }
 
-const sortPairsByFrequency = pairs => pairs.sort((a, b) => (y(b) - y(a)))
-const getBinSize = (pairs, interval) => Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
-const isInBin = (val, bin, bins) => (_.sortedIndex(bins, val) === bins.indexOf(bin))
+
+
 
 function getBins(pairs, interval = 20) {
   const binSize = getBinSize(pairs, interval)
