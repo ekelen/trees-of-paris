@@ -15,7 +15,7 @@ type NumPair = [number, Y]
 type Pair = [X, Y]
 
 interface Store {
-  trees: ITree[],
+  trees: ITree[]|any[],
   nBins: number,
   input1: Input,
   input2: Input
@@ -24,19 +24,18 @@ interface Store {
 const x = (pair: Pair): X => pair[0]
 const y = (pair: Pair): Y => pair[1]
 const rawBy = (trees: ITree[], input: Input): X[] => trees.map(t => t[input])
-const uniqBy = (trees: ITree[], input: Input): X[] => _.uniq(rawBy(trees, input))
 const toCountPairs = (vals: X[] | null): Pair => _.toPairs(_.countBy(vals))
 const sortPairsByFrequency = (pairs: Pair[]): Pair[] => pairs.sort((a, b) => (y(b) - y(a)))
 
 const max = (vals: number[]): number => _.max(vals)
 const isInBin = (val: number, bin: number, bins: number[]): boolean => (_.sortedIndex(bins, val) === bins.indexOf(bin))
-const getBinSize = (pairs: Pair[], interval: number): number => Math.ceil(_.max(pairs.map(p => +x(p))) / interval)
 const binSize = (max: number, nBins: number): number => Math.ceil(max / nBins)
 const bins = (nBins: number, binSize: number): number[] => Array.from(new Array(nBins), (v, i) => ((i + 1) * binSize))
-const binnedPairs = (rawPairs: Pair[], bins: number[]): NumPair[] => rawPairs.map(p => {
+const binnedPairs = (rawPairs: NumPair[], bins: number[]): NumPair[] => rawPairs.map(p => {
   const i = _.sortedIndex(bins, +x(p))
   return <NumPair>[bins[i], y(p)]
 })
+const mapToPrimaryChart = (pairs: Pair[], input2: Input) => pairs.map(p => ({y: y(p), name: _.toString(x(p)), drilldown: input2 ? _.toString(x(p)) : null}))
 const reducedPairs = (bins: number[], binnedPairs: NumPair[]): NumPair[] => (
   bins.map(b => {
     const binContents = binnedPairs
@@ -47,115 +46,121 @@ const reducedPairs = (bins: number[], binnedPairs: NumPair[]): NumPair[] => (
   })
 )
 
-function Bin (trees, nBins) {
-  this.trees = trees // just a reference so it's ok
-  this.nBins = nBins
+const filterByCat = (trees, input, id) => trees.filter(t => t[input] === id)
+const filterByBin = (trees, input, bins, bin) => trees.filter(t => isInBin(+t[input], bin, bins))
+
+function setIds() {
+  return ('bins' in this) ? this.bins : this.cats
 }
 
-Bin.prototype.setInput = function(input: string) {
-  if (!this.trees) throw new Error('Bin input functions must have tree data.')
-  if (!this.nBins) throw new Error('Bin input functions must have tree data.')
-  this.input = input
-  this.rawVals = rawBy(this.trees, input)
-  this.rawPairs = toCountPairs(this.rawVals)
-  this.max = _.max(this.rawVals)
-  this.binSize = Math.ceil(_.max(this.rawVals) / this.nBins)
-  this.bins = Array.from(new Array(this.nBins), (v, i) => ((i + 1) * this.binSize))
-  this.binnedPairs = this.rawPairs.map(p => {
-    const i = _.sortedIndex(this.bins, +x(p))
-    return [this.bins[i], y(p)]
-  })
-  this.isInBin = function(bin, val) { return _.sortedIndex(this.bins, val) === this.bins.indexOf(bin)}
-  this.reducedPairs = this.bins.map(b => {
-    const binContents = this.binnedPairs
-      .filter(p => +x(p) === b)
-      .map(p => y(p))
-      .reduce((acc, cur) => acc + cur, 0)
-    return [b, binContents]
-  })
-}
+export class DataStore implements Store {
+  public contInput1
+  public contInput2
 
-
-
-
-function getBins(pairs, interval = 20) {
-  const binSize = getBinSize(pairs, interval)
-  const bins = Array.from(new Array(interval), (v, i) => ((i + 1) * Math.ceil(binSize)))
-  return bins
-}
-
-function reduceContinuousPairs(pairs, interval = 20) {
-  const bins = getBins(pairs, interval)
-
-  const binnedPairs = pairs.map(p => {
-    const i = _.sortedIndex(bins, +x(p))
-    return [bins[i], y(p)]
-  })
-
-  const reducedPairs = bins.map((b) => {
-    const binContents = binnedPairs
-      .filter(p => +x(p) === b)
-      .map(p => y(p))
-      .reduce((acc, cur) => acc + cur, 0)
-    return [b, binContents]
-  })
-  return reducedPairs
-}
-
-
-
-function getInput1Sseries(trees, input1, input2 = null, binData) {
-  if (isContinuous(input1)) binData.setInput(input1)
-  const pairs = toCountPairs(rawBy(trees, input1))
-  const serieData = isContinuous(input1) ? reduceContinuousPairs(pairs) : sortPairsByFrequency(pairs)
-  const serieData2 = isContinuous(input1) ? binData.reducedPairs : sortPairsByFrequency(pairs)
-  //assert.deepEqual(serieData, serieData2, 'Not equal, debug.')
-  return serieData
-    .map(p => {
-    return {y: p[1], name: `${p[0]}`, drilldown: input2 ? `${p[0]}` : null}
-  })
-}
-
-
-
-function getInput2Series(trees, input1, input2) {
-
-  const bins = isContinuous(input1) ? getBins(toCountPairs(rawBy(trees, input1))) : null
-
-  const ids = isContinuous(input1) ?
-    bins :
-    uniqBy(trees, input1)
-
-  const getInput2PerInput1 = (id) => {
-    return trees
-      .filter(t => isContinuous(input1) ? isInBin(+(t[input1]), id, bins) : t[input1] === id)
-      .map(t => t[input2])
+  constructor(public trees: ITree[]|any[], public nBins: number, public input1: string, public input2: string) {
+    this.contInput1 = isContinuous(input1)
+    this.contInput2 = isContinuous(input2)
   }
-
-  const serieData = ids.map(id => {
-    const pairs = toCountPairs(getInput2PerInput1(id))
-    // console.log("pairs", pairs)
-    const serieData = isContinuous(input2) ? reduceContinuousPairs(pairs) : pairs
-    const seriesObj = {
-      id: _.toString(id),
-      name: `${id}`,
-      data: serieData
-    }
-    return seriesObj
-  })
-  // console.log(`serieData.length for ${input2} is ${serieData.length}`)
-  assert(serieData.length > 0, 'No serie data.')
-
-
-  return serieData
 }
+
+function Series(trees, nBins, input1, input2, input) {
+  console.log('Series:', this)
+  this.input = input
+  this.rawVals = rawBy(trees, input)
+  this.rawPairs = toCountPairs(this.rawVals)
+}
+
+function LinearSeries(trees, nBins, input1, input2, input) {
+  Series.call(this, ...Array.from(arguments), input1)
+  console.log('LinearSeries:', this)
+  this.max = max(this.rawVals)
+  this.binSize = binSize(this.max, nBins)
+  this.bins = bins(nBins, this.binSize)
+  this.binnedPairs = binnedPairs(this.rawPairs, this.bins)
+  this.seriePairs = reducedPairs(this.bins, this.binnedPairs)
+}
+
+function NomSeries(trees, nBins, input1, input2, input) {
+  Series.call(this, ...Array.from(arguments))
+  this.cats = _.uniq(this.rawPairs.map(p => x(p)))
+  this.seriePairs = sortPairsByFrequency(this.rawPairs)
+}
+
+function PrimarySeries(store: DataStore) {
+  const { trees, nBins, input1, input2, contInput1 } = store
+  console.log('trees in primarySeries', trees)
+  assert(trees.length > 0, 'trees have no length')
+  contInput1 ?
+    LinearSeries.call(this, trees, nBins, input1, input2, input1) :
+    NomSeries.call(this, trees, nBins, input1, input2, input1)
+  this.data = mapToPrimaryChart(this.seriePairs, input2)
+  this.ids = !this.input2 ? null : setIds.call(this)
+}
+
+
+// function getDrilldown(id: number|string) {
+//   const treeGroup = filterByBin(this.trees, this.input1, this.bins, id)
+//   let serieData
+//   if (treeGroup.length) {
+//     let serie = this.contInput2 ? new LinearSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)  :
+//       new NomSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)
+//     serieData = serie.seriePairs
+//   }
+//   return {
+//     data: serieData,
+//     id: id
+//   }
+// }
+//
+// function getNomDrilldown(id: string) {
+//   const treeGroup = filterByCat(this.trees, this.input1, id)
+//   let serieData
+//   if (treeGroup.length) {
+//     let serie = this.contInput2 ? new LinearSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)  :
+//       new NomSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)
+//     console.log(serie)
+//     serieData = serie.seriePairs
+//   }
+//   return !treeGroup.length ? null :
+//     {
+//       data: serieData,
+//       id: id
+//     }
+// }
+//
+// function sortDrilldown() {
+//   if (this.contInput1) {
+//     return this.ids.map(id => getDrilldown.call(this, +id))
+//   }
+//   else if (!this.contInput1) {
+//     return this.ids.map(id => getNomDrilldown.call(this, id))
+//       .filter(dat => !!dat)
+//   }
+// }
+//
+// function SecondarySeries(trees, nBins, input1, input2) {
+//   if (!input2) return
+//   PrimarySeries.call(this, ...Array.from(arguments))
+//   const secondarySeries = sortDrilldown.call(this)
+//   this.secondSeries = secondarySeries.map(dat => ({
+//       id: `${dat.id}`,
+//       name: `${dat.id}`,
+//       data: dat.data
+//     })
+//   )
+//
+// }
 
 export function IChart (input1: string, trees: ITree[], input2?: string | null): any {
   console.time('IChart')
-  const binData = new Bin(trees, 20)
+  const myData = new DataStore(trees, 20, input1, input2)
+  console.log(trees)
+  const primarySeries = new PrimarySeries(myData)
+  console.log(primarySeries.data)
+  // const binData = new Bin(trees, 20)
   // let chartTimer = setTimeout(() => { throw new Error('timeout') }, 3000)
-  const data = getInput1Sseries(trees, input1, input2, binData)
-  const drilldownData = getInput2Series(trees, input1, input2)
+  // const data = getInput1Sseries(trees, input1, input2, binData)
+  // const drilldownData = getInput2Series(trees, input1, input2)
   console.timeEnd('IChart')
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },
@@ -171,11 +176,11 @@ export function IChart (input1: string, trees: ITree[], input2?: string | null):
       {
         name: 'All trees',
         color: DGREEN1,
-        data,
+        data: primarySeries.data,
       }
     ],
     drilldown: {
-        series: drilldownData
+        series: null
     },
     plotOptions: { series: { cropThreshold: 300 } }
   }
