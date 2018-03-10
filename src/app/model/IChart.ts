@@ -138,48 +138,37 @@ class DrillDown extends Series {
   }
 }
 
-class MakeThings {
+class ChartTreeParser {
   primarySeries: PrimarySeries
   drilldownSeries: DrilldownSeries[]
-  hasDrilldown: boolean
-  contInput1: boolean
-  contInput2: boolean
   config: DataStore
   ids: Input[]
 
   constructor(public trees, public nBins, public input1, public input2) {
     this.config = new DataStore(nBins, input1, input2)
-  }
+    this.primarySeries = null
+    this.drilldownSeries = null
+    this.ids = null
 
-  public init = () => {
-    this._getPrimary()
-    this._getDrillDown()
-  }
-
-  private _getPrimary = () => {
     const primary = new Primary(this.trees, this.config)
     this.primarySeries = primary.primarySeries
     this.ids = primary.ids
-  }
 
-  private _getDrillDown = () => {
-    if (!this.hasDrilldown || !this.ids || !this.ids.length) return
-    const filterfn = this.contInput1 ? filterByBin : filterByCat
-    const drilldownItems = this.ids.map((id, i) => {
-      const treeGroup = filterfn(this.trees, this.input1, this.ids, id)
-      let drillDown = new DrillDown(treeGroup, this.config, id)
-      return <DrilldownSeries>mapToDrilldown(id, <DrilldownSeriesData>drillDown.seriePairs)
-    })
-    this.drilldownSeries = drilldownItems
+    if (this.config.hasDrilldown) {
+      const filterfn = this.config.contInput1 ? filterByBin : filterByCat
+      const drilldownItems = this.ids.map((id, i) => {
+        const treeGroup = filterfn(this.trees, this.input1, this.ids, id)
+        let drillDown = new DrillDown(treeGroup, this.config, id)
+        return <DrilldownSeries>mapToDrilldown(id, <DrilldownSeriesData>drillDown.seriePairs)
+      })
+      this.drilldownSeries = drilldownItems
+    }
   }
-
 }
 
-export function IChart (input1: string, trees: ITree[], input2?: string | null): any {
+export function IChart (trees: ITree[], nBins = 20, input1: string, input2?: string | null): any {
   console.time('IChart')
-  const myData = new DataStore(trees, 20, input1, input2)
-  const primarySeries = new PrimarySeries(myData)
-  const drilldownSeries = input2 ? new DrilldownSeries(primarySeries) : null
+  const data = new ChartTreeParser(trees, nBins, input1, input2)
   console.timeEnd('IChart')
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },
@@ -192,14 +181,10 @@ export function IChart (input1: string, trees: ITree[], input2?: string | null):
       min: 0,
       title: { text: 'Frequency' }},
     series: [
-      {
-        name: 'All trees',
-        color: DGREEN1,
-        data: primarySeries.data,
-      }
+      data.primarySeries
     ],
     drilldown: {
-        series: null
+        series: data.drilldownSeries
     },
     plotOptions: { series: { cropThreshold: 300 } }
   }

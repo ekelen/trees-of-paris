@@ -72,7 +72,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   handleToggleIndVarShowAll(showAll: boolean) {
     this.indVarShowAll = showAll
     if (showAll || CONTINUOUS_VARS.includes(this.input1)) { return this._redrawChart() }
-    const { input1 } = this
+    const { input1, input2 } = this
 
     const popularKeys =
     __.sortUniqs(this.trees, input1)
@@ -80,12 +80,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     .map(v => v[0])
 
     const filteredData = this.trees.filter(t => popularKeys.includes(t[input1]))
-    this.chartOptions = IChart(input1, filteredData, this.input2)
+    this.chartOptions = IChart(filteredData, 20, input1, input2)
     this.chart = new Chart(this.chartOptions)
   }
 
   private _redrawChart() {
-    this.chartOptions = IChart(this.input1, this.trees, this.input2)
+    this.chartOptions = IChart(this.trees, 20, this.input1, this.input2)
     this.chart = new Chart(this.chartOptions);
   }
 
