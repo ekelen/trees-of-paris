@@ -14,17 +14,30 @@ type Input = string
 type NumPair = [number, Y]
 type Pair = [X, Y]
 
-interface Store {
-  trees: ITree[]|any[],
-  nBins: number,
-  input1: Input,
-  input2: Input
+type PrimarySeries = {
+  name: string,
+  color?: string,
+  data: PrimarySeriesData[]
 }
+
+type PrimarySeriesData = {
+  name: string,
+  y: Y,
+  drilldown: string
+}
+
+type DrilldownSeries = {
+  name: string,
+  id: string,
+  data: DrilldownSeriesData
+}
+
+type DrilldownSeriesData = Pair[]
 
 const x = (pair: Pair): X => pair[0]
 const y = (pair: Pair): Y => pair[1]
 const rawBy = (trees: ITree[], input: Input): X[] => trees.map(t => t[input])
-const toCountPairs = (vals: X[] | null): Pair => _.toPairs(_.countBy(vals))
+const toCountPairs = (vals: X[] | null): Pair[] => _.toPairs(_.countBy(vals))
 const sortPairsByFrequency = (pairs: Pair[]): Pair[] => pairs.sort((a, b) => (y(b) - y(a)))
 
 const max = (vals: number[]): number => _.max(vals)
@@ -35,7 +48,13 @@ const binnedPairs = (rawPairs: NumPair[], bins: number[]): NumPair[] => rawPairs
   const i = _.sortedIndex(bins, +x(p))
   return <NumPair>[bins[i], y(p)]
 })
-const mapToPrimaryChart = (pairs: Pair[], input2: Input) => pairs.map(p => ({y: y(p), name: _.toString(x(p)), drilldown: input2 ? _.toString(x(p)) : null}))
+const mapToPrimaryChart = (pairs: Pair[], input2: Input): PrimarySeriesData[] => pairs.map(p => ({y: y(p), name: _.toString(x(p)), drilldown: input2 ? _.toString(x(p)) : null}))
+const mapToDrilldown = (id: string, data: DrilldownSeriesData): DrilldownSeries => (<DrilldownSeries>{
+  id: `${id}`,
+  name: `${id}`,
+  data: <DrilldownSeriesData> data
+})
+
 const reducedPairs = (bins: number[], binnedPairs: NumPair[]): NumPair[] => (
   bins.map(b => {
     const binContents = binnedPairs
@@ -46,85 +65,113 @@ const reducedPairs = (bins: number[], binnedPairs: NumPair[]): NumPair[] => (
   })
 )
 const filterByCat = (trees, input, bins, id) => trees.filter(t => t[input] === id)
-const filterByBin = (trees, input, bins, bin) => trees.filter(t => isInBin(+t[input], bin, bins))
+const filterByBin = (trees, input, bins, bin) => trees.filter(t => isInBin(+t[input], +bin, bins))
 
-
-function setIds() {
-  return ('bins' in this) ? this.bins : this.cats
+interface Store {
+  nBins: number,
+  input1: Input,
+  input2: Input
 }
 
 class DataStore implements Store {
   public contInput1
   public contInput2
+  public hasDrilldown
 
-  constructor(public trees: ITree[]|any[], public nBins: number, public input1: string, public input2: string) {
+  constructor(public nBins: number, public input1: string, public input2: string) {
+    this.hasDrilldown = !!input2
     this.contInput1 = isContinuous(input1)
     this.contInput2 = isContinuous(input2)
   }
 }
 
-function Series(trees, nBins, input1, input2, input) {
-  console.log('Series:', this)
-  this.input = input
-  this.rawVals = rawBy(trees, input)
-  this.rawPairs = toCountPairs(this.rawVals)
+class Series extends DataStore {
+  public rawVals: X[]
+  public rawPairs: Pair[]
+
+  public seriePairs: Pair[]
+
+  constructor(public trees, public store: Store, public isPrimary: boolean) {
+    super(store.nBins, store.input1, store.input2)
+    this.rawVals = rawBy(this.trees, isPrimary ? this.input1 : this.input2)
+    this.rawPairs = <Pair[]>toCountPairs(this.rawVals)
+    this.contInput1 ? this._linearSeries() : this._nomSeries()
+  }
+
+  private _linearSeries = () => {
+    const _max = max(<number[]>this.rawVals)
+    const _binSize = binSize(_max, this.nBins)
+    const _bins = bins(this.nBins, _binSize)
+    const _binnedPairs = binnedPairs(<NumPair[]>this.rawPairs, _bins)
+    this.seriePairs = reducedPairs(_bins, _binnedPairs)
+  }
+
+  private _nomSeries = () => {
+    this.seriePairs = sortPairsByFrequency(this.rawPairs)
+  }
+
 }
 
-function LinearSeries(trees, nBins, input1, input2, input) {
-  Series.call(this, ...Array.from(arguments), input1)
-  console.log('LinearSeries:', this)
-  this.max = max(this.rawVals)
-  this.binSize = binSize(this.max, nBins)
-  this.bins = bins(nBins, this.binSize)
-  this.binnedPairs = binnedPairs(this.rawPairs, this.bins)
-  this.seriePairs = reducedPairs(this.bins, this.binnedPairs)
-}
+class Primary extends Series {
+  serieData: PrimarySeriesData[]
+  primarySeries: PrimarySeries
+  ids: Input[]
 
-function NomSeries(trees, nBins, input1, input2, input) {
-  Series.call(this, ...Array.from(arguments))
-  this.cats = _.uniq(this.rawPairs.map(p => x(p)))
-  this.seriePairs = sortPairsByFrequency(this.rawPairs)
-}
-
-function PrimarySeries(store: DataStore) {
-  const { trees, nBins, input1, input2, contInput1 } = store
-  console.log('trees in primarySeries', trees)
-  assert(trees.length > 0, 'trees have no length')
-  contInput1 ?
-    LinearSeries.call(this, trees, nBins, input1, input2, input1) :
-    NomSeries.call(this, trees, nBins, input1, input2, input1)
-  this.data = mapToPrimaryChart(this.seriePairs, input2)
-  this.ids = !this.input2 ? null : setIds.call(this)
-}
-
-
-function getDrilldown(id: number|string, filterfn) {
-  const treeGroup = filterfn(this.trees, this.input1, this.bins, id)
-  if (!treeGroup) return null
-    let serie = this.contInput2 ?
-      new LinearSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)  :
-      new NomSeries(treeGroup, this.nBins, this.input1, this.input2, this.input2)
-    return {
-      data: serie.seriePairs,
-      id: id
+  constructor(public trees: ITree[], public config: Store) {
+    super(trees, config, true)
+    const name = !this.hasDrilldown ? `Trees by ${this.input1}` : `Trees by ${this.input1} » ${this.input2}`
+    this.serieData = mapToPrimaryChart(this.seriePairs, this.input2)
+    this.ids = this.serieData.map(dat => dat.drilldown)
+    this.primarySeries = {
+      name: name,
+      color: LGREEN1,
+      data: this.serieData
     }
+  }
 }
 
-function sortDrilldown() {
-  const filterfn = this.contInput1 ? filterByBin : filterByCat
-  return this.ids.map(id => getDrilldown.call(this, +id, filterfn))
+class DrillDown extends Series {
+  drilldownSeriesData: DrilldownSeries
+  constructor(public trees: ITree[], public config: Store, id: Input) {
+    super(trees, config, false)
+    this.drilldownSeriesData = mapToDrilldown(id, this.seriePairs)
+  }
 }
 
-function SecondarySeries(trees, nBins, input1, input2) {
-  if (!input2) return
-  PrimarySeries.call(this, ...Array.from(arguments))
-  const secondarySeries = sortDrilldown.call(this)
-  this.secondSeries = secondarySeries.map(dat => ({
-      id: `${dat.id}`,
-      name: `${dat.id}`,
-      data: dat.data
+class MakeThings {
+  primarySeries: PrimarySeries
+  drilldownSeries: DrilldownSeries[]
+  hasDrilldown: boolean
+  contInput1: boolean
+  contInput2: boolean
+  config: DataStore
+  ids: Input[]
+
+  constructor(public trees, public nBins, public input1, public input2) {
+    this.config = new DataStore(nBins, input1, input2)
+  }
+
+  public init = () => {
+    this._getPrimary()
+    this._getDrillDown()
+  }
+
+  private _getPrimary = () => {
+    const primary = new Primary(this.trees, this.config)
+    this.primarySeries = primary.primarySeries
+    this.ids = primary.ids
+  }
+
+  private _getDrillDown = () => {
+    if (!this.hasDrilldown || !this.ids || !this.ids.length) return
+    const filterfn = this.contInput1 ? filterByBin : filterByCat
+    const drilldownItems = this.ids.map((id, i) => {
+      const treeGroup = filterfn(this.trees, this.input1, this.ids, id)
+      let drillDown = new DrillDown(treeGroup, this.config, id)
+      return <DrilldownSeries>mapToDrilldown(id, <DrilldownSeriesData>drillDown.seriePairs)
     })
-  )
+    this.drilldownSeries = drilldownItems
+  }
 
 }
 
@@ -132,7 +179,7 @@ export function IChart (input1: string, trees: ITree[], input2?: string | null):
   console.time('IChart')
   const myData = new DataStore(trees, 20, input1, input2)
   const primarySeries = new PrimarySeries(myData)
-  const secondarySeries = input2 ? new SecondarySeries(trees, 20, input1, input2) : null
+  const drilldownSeries = input2 ? new DrilldownSeries(primarySeries) : null
   console.timeEnd('IChart')
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },

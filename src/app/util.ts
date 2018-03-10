@@ -36,6 +36,13 @@ export const toggleItem = (array, item): any[] => {
 // Returns array of pairs [['value1', 4], ['value2', 3]] etc.
 export const toCountPairs = (vals: string[] | number[] | null):any[][] => (_.toPairs(_.countBy(vals)))
 
+
+function Super(obj) {
+  for (let k in obj) {
+    if (!Object.hasOwnProperty(this)) this[k] = obj[k]
+  }
+}
+
 // Returns one object: {value1: 4, value2: 3} etc.
 export const getFrequency = (data: any[], key: string):any => {
   return _.countBy(pull(data, key))}
