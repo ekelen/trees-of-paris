@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core'
-import {ITree} from '../model/ITree'
+import {ITree} from '../model/types/ITree'
 import * as geolib from 'geolib'
 import * as L from 'leaflet'
 import * as _ from 'lodash'
 import {MAPBOX_API_KEY} from '../../environments/environment'
-import {evergreens, flowering, fruit} from '../constants/Biology'
+import {EVERGR, FLOWER, FRUIT} from '../model/constants/Biology'
 
 const mapTemplate = 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 const mapOptions: L.TileLayerOptions = {
-  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+  attribution: 'Map drilldownSerie &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
   zoomControl: false,
   keyboard: false,
   id: 'mapbox.streets',
@@ -97,7 +97,7 @@ export class ExploreClosestComponent implements OnInit {
     this.closestTrees.forEach(tree => {
       let iconType = tree.notable ?
         'notable' :
-        evergreens.includes(tree.genus) ?
+        EVERGR.includes(tree.genus) ?
           'evergreen' :
           undefined
       this._addMarker(

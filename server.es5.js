@@ -36,7 +36,7 @@ var request = require('request'),
     JSONStream = require('JSONStream'),
     es = require('event-stream');
 
-var treeData = "../assets/data/les-arbres.json";
+var treeData = "../assets/drilldownSerie/les-arbres.json";
 var treeSchema = require('./src/app/mongoose/Tree.js');
 
 var Trees = mongoose.model('Trees', treeSchema);
@@ -275,7 +275,7 @@ function Options(query) {
 
 var addNew = function addNew() {
   return new _promise2.default(function (resolve) {
-    return request({ url: 'http://localhost:8080/static/data/lg/les-arbres.json' }).pipe(JSONStream.parse('*')).pipe(es.mapSync(function () {
+    return request({ url: 'http://localhost:8080/static/drilldownSerie/lg/les-arbres.json' }).pipe(JSONStream.parse('*')).pipe(es.mapSync(function () {
       var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(t) {
         return _regenerator2.default.wrap(function _callee5$(_context5) {
           while (1) {
@@ -324,7 +324,7 @@ var updateSpecial = function () {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
-            request({ url: 'http://localhost:8080/static/data/les-arbres.json' }).pipe(JSONStream.parse('*')).pipe(es.mapSync(function () {
+            request({ url: 'http://localhost:8080/static/drilldownSerie/les-arbres.json' }).pipe(JSONStream.parse('*')).pipe(es.mapSync(function () {
               var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(t) {
                 return _regenerator2.default.wrap(function _callee6$(_context6) {
                   while (1) {

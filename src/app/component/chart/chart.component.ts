@@ -1,17 +1,13 @@
-import { Component, AfterViewInit, OnInit, Input, OnChanges, OnDestroy  } from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core'
+import {ITree} from '../../model/types/ITree'
+import {HighChart} from '../../model/HighChart'
 
-import * as assert from "assert"
-import { ITree } from '../../model/ITree'
-import { IChart } from '../../model/IChart'
+import {TreesService} from '../../service/trees.service'
 
-import { TreesService } from '../../service/trees.service';
-
-import { Chart } from 'angular-highcharts';
-
-import * as _ from 'lodash'
-import * as __ from '../../util'
-import {CONTINUOUS_VARS} from '../../constants/Visualization'
+import {Chart} from 'angular-highcharts'
+import {isContinuous, sortUniqs} from '../../util'
 import {environment} from '../../../environments/environment'
+import {InputLabel} from '../../model/types/Chart'
 
 @Component({
   selector: 'app-chart',
@@ -20,11 +16,11 @@ import {environment} from '../../../environments/environment'
     <div class="graph-container">
       <div [chart]=chart></div>
       <app-chart-control
-        (indVarUpdated)="handleIndVarUpdated($event)"
-        (subVarUpdated)="handleSubVarUpdated($event)"
-        (toggleShowAllIndVar)="handleToggleIndVarShowAll($event)"
-        [indVar]=input1 [subVar]=input2
-        [indVarShowAll]=indVarShowAll></app-chart-control>
+        (updatePrimVar)="onUpdateInput1($event)"
+        (updateDrilldownVar)="onUpdateInput2($event)"
+        (filterShowAllPrimaryVar)="handleToggleIndVarShowAll($event)"
+        [input1]="input1" [input2]="input2"
+        [primaryShowAll]="input1showAll"></app-chart-control>
     </div>
   `
 })
@@ -33,10 +29,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   chartOptions: any = {}
   chart: any
 
-  input1: string
-  input2: string
+  input1: InputLabel
+  input2: InputLabel
 
-  indVarShowAll = true
+  input1showAll = true
 
   constructor(
     private treesService: TreesService ) {
@@ -59,33 +55,33 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
   }
 
-  handleIndVarUpdated(indVar) {
-    this.input1 = indVar
+  onUpdateInput1(newInput1) {
+    this.input1 = newInput1
     this._redrawChart()
   }
 
-  handleSubVarUpdated(subVar) {
-    this.input2 = subVar
+  onUpdateInput2(newInput2) {
+    this.input2 = newInput2
     this._redrawChart()
   }
 
   handleToggleIndVarShowAll(showAll: boolean) {
-    this.indVarShowAll = showAll
-    if (showAll || CONTINUOUS_VARS.includes(this.input1)) { return this._redrawChart() }
+    this.input1showAll = showAll
+    if (showAll || isContinuous(this.input1)) { return this._redrawChart() }
     const { input1, input2 } = this
 
     const popularKeys =
-    __.sortUniqs(this.trees, input1)
+    sortUniqs(this.trees, input1)
     .slice(0, 19)
     .map(v => v[0])
 
     const filteredData = this.trees.filter(t => popularKeys.includes(t[input1]))
-    this.chartOptions = IChart(filteredData, 20, input1, input2)
+    this.chartOptions = HighChart(filteredData, 20, input1, input2)
     this.chart = new Chart(this.chartOptions)
   }
 
   private _redrawChart() {
-    this.chartOptions = IChart(this.trees, 20, this.input1, this.input2)
+    this.chartOptions = HighChart(this.trees, 20, this.input1, this.input2)
     this.chart = new Chart(this.chartOptions);
   }
 

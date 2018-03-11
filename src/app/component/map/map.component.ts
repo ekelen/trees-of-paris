@@ -1,14 +1,8 @@
-import {Component, EventEmitter, Output, OnInit, AfterViewInit, OnChanges} from '@angular/core'
-import { NgForm } from '@angular/forms';
-import { Address } from 'angular-google-place';
-import { Paris } from '../../constants/Paris'
+import {AfterViewInit, Component} from '@angular/core'
+import {PARIS} from '../../model/constants/Paris'
 
-import { MapService } from '../../service/map.service';
-import { ParamsService } from '../../service/params.service'
-
-import * as math from "mathjs"
+import {MapService} from '../../service/map.service'
 import * as _ from "lodash"
-import * as L from 'leaflet'
 
 @Component({
   selector: 'app-map',
@@ -38,8 +32,8 @@ export class MapComponent implements AfterViewInit {
     this.errorMessage = ''
     if (e.postal_code &&
       _.inRange(parseInt(e.postal_code), 75001, 75020) &&
-      _.inRange(parseFloat(e.lat), Paris.min_lat, Paris.max_lat) &&
-      _.inRange(parseFloat(e.lng), Paris.min_lng, Paris.max_lng)) {
+      _.inRange(parseFloat(e.lat), PARIS.min_lat, PARIS.max_lat) &&
+      _.inRange(parseFloat(e.lng), PARIS.min_lng, PARIS.max_lng)) {
       this.mapService.search(e.lat, e.lng)
     } else {
       this.errorMessage = 'Please enter a valid address within one of the 20 arrondissements.'

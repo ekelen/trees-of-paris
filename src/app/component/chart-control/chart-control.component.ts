@@ -1,56 +1,53 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core'
 
-import { ITree } from '../../model/ITree'
-import { INDVARS } from '../../constants/Visualization'
-
-// import * as H from 'highcharts'
-import { Chart } from 'angular-highcharts';
-
-import * as _ from 'lodash'
-import * as __ from '../../util'
+import {INPUTS} from '../../model/constants/Visualization'
+import {InputLabel} from '../../model/types/Chart'
 
 @Component({
   selector: 'app-chart-control',
   template: `
     <div class="d-flex flex-row pt-2 mt-2">
 
-    <div class="p-2">Input variable:</div>
-    <select class="p-2" [ngModel]="indVar" (ngModelChange)="onChangeIndvar($event)" name="indVar">
-      <option *ngFor="let i of indVars" [value]=i>{{ i }}</option>
-    </select>
+      <div class="p-2">Input variable:</div>
+      <select class="p-2" [ngModel]="input1" (ngModelChange)="onChangeIndvar($event)"
+              name="indVar">
+        <option *ngFor="let i of input1opts" [value]=i>{{ i }}</option>
+      </select>
 
-    <div class="form-check form-check-inline ml-1">
-      <input
-      class="form-check-input"
-      type="checkbox"
-      name="inlineRadioOptions"
-      [checked]="indVarShowAll"
-      (click)="toggleIndVarShowAll($event)">Show All
-    </div>
+      <div class="form-check form-check-inline ml-1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name="inlineRadioOptions"
+          [checked]="primaryShowAll"
+          (click)="toggleIndVarShowAll($event)">Show All
+      </div>
 
-    <div class="p-2">Drilldown by:</div>
-    <select class="p-2" [ngModel]="subVar" (ngModelChange)="onChangeSubVar($event)" name="subVar">
-      <option *ngFor="let s of subVars" [value]=s>{{ s }}</option>
-    </select>
-    <div *ngIf="subVar" class="p-2 text-success">Click on any bar on the graph to drill down data!</div>
+      <div class="p-2">Drilldown by:</div>
+      <select class="p-2" [ngModel]="input2" (ngModelChange)="onChangeSubVar($event)"
+              name="subVar">
+        <option *ngFor="let s of input2opts" [value]=s>{{ s }}</option>
+      </select>
+      <div *ngIf="input2" class="p-2 text-success">Click on any bar on the graph to drill down
+        data!
+      </div>
 
     </div>
   `,
   styles: []
 })
 
-export class ChartControlComponent implements OnInit {
-  indVars:string[]
-  subVars:string[]
+export class ChartControlComponent implements OnInit, OnChanges {
+  input1opts: InputLabel[]
+  input2opts: InputLabel[]
 
-  @Input() indVar:string
-  @Input() subVar:string
-  @Input() indVarShowAll:boolean
+  @Input() input1: InputLabel
+  @Input() input2: InputLabel
+  @Input() primaryShowAll: boolean
 
-  @Output() indVarUpdated: EventEmitter<any> = new EventEmitter();
-  @Output() subVarUpdated: EventEmitter<any> = new EventEmitter();
-  @Output() toggleShowAllIndVar: EventEmitter<any> = new EventEmitter();
+  @Output() updatePrimVar: EventEmitter<any> = new EventEmitter();
+  @Output() updateDrilldownVar: EventEmitter<any> = new EventEmitter();
+  @Output() filterShowAllPrimaryVar: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
@@ -59,23 +56,23 @@ export class ChartControlComponent implements OnInit {
   }
 
   ngOnChanges() {
-    this.indVars = INDVARS.filter(v => v !== this.subVar)
-    this.subVars = INDVARS.filter(v => v !== this.indVar)
+    this.input1opts = <InputLabel[]>INPUTS.filter(v => v !== this.input2)
+    this.input2opts = <InputLabel[]>INPUTS.filter(v => v !== this.input1)
   }
 
   onChangeIndvar(e) {
-    this.indVarUpdated.emit(e)
+    this.updatePrimVar.emit(e)
   }
 
   onChangeSubVar(e) {
-    this.subVarUpdated.emit(e)
+    this.updateDrilldownVar.emit(e)
   }
 
   toggleIndVarShowAll = (e) => {
     e.target.disabled = "true"
     window.setTimeout(() => e.target.disabled = false, 1500);
     let showAll = e.target.checked
-    this.toggleShowAllIndVar.emit(showAll)
+    this.filterShowAllPrimaryVar.emit(showAll)
   }
 
 }

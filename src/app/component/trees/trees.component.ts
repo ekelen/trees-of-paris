@@ -5,9 +5,8 @@ import { MapService } from '../../service/map.service'
 import { LoadingComponent } from '../loading/loading.component'
 import { ParamsService, IParams } from '../../service/params.service'
 
-import { ITree } from '../../model/ITree'
-import { IChart } from '../../model/IChart'
-import { IError } from '../../model/IError'
+import { ITree } from '../../model/types/ITree'
+import { HighChart } from '../../model/HighChart'
 
 import * as _ from 'lodash'
 import * as __ from '../../util'

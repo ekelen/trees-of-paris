@@ -177,7 +177,7 @@ function Options (query) {
 
 const addNew = () => {
   return new Promise(resolve => {
-    return request({url: 'http://localhost:8080/static/data/lg/les-arbres.json'})
+    return request({url: 'http://localhost:8080/static/drilldownSerie/lg/les-arbres.json'})
       .pipe(JSONStream.parse('*'))
       .pipe(es.mapSync(async (t) => {
         await Trees.create({
@@ -204,7 +204,7 @@ const addNew = () => {
 }
 
 const updateSpecial = async() => {
-  request({url: 'http://localhost:8080/static/data/lg/les-arbres.json'})
+  request({url: 'http://localhost:8080/static/drilldownSerie/lg/les-arbres.json'})
     .pipe(JSONStream.parse('*'))
     .pipe(es.mapSync(async (t) => {
       await Trees.update(

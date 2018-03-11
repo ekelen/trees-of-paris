@@ -5,8 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { ParamsService } from './params.service'
 
-import { IError } from '../model/IError'
-import { ITree } from '../model/ITree'
+import { ITree } from '../model/types/ITree'
 
 import * as _ from 'lodash'
 import * as __ from '../util'
