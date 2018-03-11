@@ -1,9 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
-var axios = require("axios")
-var moment = require("moment")
-var queryString = require("query-string")
 var ObjectID = mongodb.ObjectID;
 require('dotenv').config({ silent: process.env.NODE_ENV === 'production' })
 
@@ -16,7 +13,6 @@ var request = require('request')
   , JSONStream = require('JSONStream')
   , es = require('event-stream')
 
-var treeData = "../assets/data/les-arbres.json"
 var treeSchema = require('./src/app/mongoose/Tree.js')
 
 var Trees = mongoose.model('Trees', treeSchema);
@@ -52,10 +48,29 @@ function handleError(res, reason = "Server error.", message = reason, code) {
   return res.status(code || 500).json({error: {reason: reason, message: message, code: code}})
 }
 
+// MIDDLEWARE
+const checkHeader = function (req, res, next) {
+  if (!req.headers['x-auth']) return handleError(res, "You are not authorized.", null, 401)
+  if (req.headers['x-auth'] !== process.env.ADMIN_KEY) return handleError(res, "You are not authorized.", null, 401)
+  next()
+}
+
 // ROUTES
-// app.get('/init', function(req, res) {
-//   addRecords()
-// })
+app.get('/api/init', checkHeader, async function(req, res) {
+  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 180000)
+  const results = await addNew()
+  return res.json(results)
+})
+
+app.get('/api/fix_special', checkHeader, async function (req, res) {
+  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 180000)
+  const results = await updateSpecial()
+  return res.json(results)
+})
+
+app.get('/api/test_private', checkHeader, (req, res) => {
+  return res.json({message: 'You used the right header.'})
+})
 
 app.get("/api/trees", async function(req, res) {
   const { query } = req
@@ -67,7 +82,6 @@ app.get("/api/trees", async function(req, res) {
 });
 
 app.get("/api/trees/search", async (req, res) => {
-  // const queryStr = queryString.stringify(req.query)
   const { query } = req
   const dbQuery = new Search(query)
   const options = new Options(query)
@@ -91,7 +105,7 @@ app.use(express.static(distDir));
 
 
 // CONTROLLERS
-const formatGeoSearch = (lnglat, distance = 200) => {
+const formatGeoSearch = (lnglat, distance = 250) => {
   let geoQuery = {}
   let geoPt = {
     type: "Point",
@@ -142,7 +156,7 @@ function Search (query) {
         this[k] = Util.toNum(query[k])
     }
     else if (k === "geometry") {
-      this['geometry'] = formatGeoSearch(Util.toLngLat(query[k]))
+      this['geometry'] = formatGeoSearch(Util.toLngLat(query[k]), query['distance'] ? +query['distance'] : undefined)
     }
   }
 }
@@ -155,24 +169,46 @@ function Options (query) {
   }
 }
 
-const addRecords = async() => {
-  request({url: 'http://localhost:8080/static/data/les-arbres.json'})
-  .pipe(JSONStream.parse('*'))
-  .pipe(es.mapSync(async (t) => {
-    await Trees.create({
-      id: t.recordid,
-      species: t.fields.espece,
-      genus: t.fields.genre,
-      commonName: t.fields.libellefrancais,
-      street: t.fields.adresse.toLowerCase(),
-      arrondissement: parseInt(t.fields.arrondissement.split('').filter(c => c >= '0' && c <= '9').join('')),
-      geometry: t.geometry,
-      notable: !!t.fields.remarquable,
-      usage: t.fields.domanialite.toLowerCase(),
-      circumference: parseInt(t.fields.circonferenceencm),
-      height: parseInt(t.fields.hauteurenm)
-    })
-    .then(() => console.log("ok"))
-    .catch(err => console.log(err.message))
-  }))
+
+
+const addNew = () => {
+  return new Promise(resolve => {
+    return request({url: 'http://localhost:8080/static/drilldownSerie/lg/les-arbres.json'})
+      .pipe(JSONStream.parse('*'))
+      .pipe(es.mapSync(async (t) => {
+        await Trees.create({
+          id: t.recordid,
+          species: t.fields.espece,
+          genus: t.fields.genre,
+          commonName: t.fields.libellefrancais,
+          street: t.fields.adresse.toLowerCase(),
+          arrondissement: parseInt(t.fields.arrondissement.split('').filter(c => c >= '0' && c <= '9').join('')),
+          geometry: t.geometry,
+          notable: !!(+t.fields.remarquable),
+          usage: t.fields.domanialite.toLowerCase(),
+          circumference: parseInt(t.fields.circonferenceencm),
+          height: parseInt(t.fields.hauteurenm)
+        })
+          .then(() => console.log("ok"))
+          .catch(err => {})
+      }))
+      .on('end', () => {
+        console.log('Sort of the end.')
+        resolve('finished')
+      })
+  })
+}
+
+const updateSpecial = async() => {
+  request({url: 'http://localhost:8080/static/drilldownSerie/lg/les-arbres.json'})
+    .pipe(JSONStream.parse('*'))
+    .pipe(es.mapSync(async (t) => {
+      await Trees.update(
+        {id: t.recordid},
+        {$set:{notable: !!(+t.fields.remarquable)}}
+      )
+        .then(() => console.log("ok"))
+        .catch(err => console.log(err.message))
+    }))
+    .then(() => ('This will not work, need request-promise.'))
 }

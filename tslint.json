@@ -1,7 +1,7 @@
 {
   "rules": {
     "max-line-length": [
-      true,
+      false,
       100
     ],
     "no-inferrable-types": false,
@@ -19,7 +19,7 @@
     "no-eval": true,
     "no-arg": true,
     "no-internal-module": true,
-    "no-trailing-whitespace": true,
+    "no-trailing-whitespace": false,
     "no-bitwise": true,
     "no-unused-expression": true,
     "no-var-keyword": true,
@@ -27,11 +27,10 @@
       true,
       "check-catch",
       "check-else",
-      "check-open-brace",
-      "check-whitespace"
+      "check-open-brace"
     ],
     "quotemark": [
-      true,
+      false,
       "single",
       "avoid-escape"
     ],
@@ -48,7 +47,7 @@
         "variable-declaration": "nospace"
       }
     ],
-    "curly": true,
+    "curly": false,
     "variable-name": [
       true,
       "ban-keywords",

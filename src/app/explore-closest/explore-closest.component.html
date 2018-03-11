@@ -1,0 +1,10 @@
+<div>
+  <p class="text-danger">
+    {{ errorMessage }}
+  </p>
+  <p>
+    The closest tree to you is {{ distanceClosestTree + 'm' }} away.
+  </p>
+  <div id="treeMap"></div>
+  <span class="linkStyle" (click)="clickGoChart()">« Return to chart view</span>
+</div>

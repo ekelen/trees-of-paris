@@ -1,84 +1,73 @@
-import { Component, AfterViewInit, OnInit, Input, OnChanges  } from '@angular/core';
-import * as Rx from 'rxjs/Rx';
-import * as math from "mathjs"
+import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core'
+import {ITree} from '../../model/types/ITree'
+import {HighChart} from '../../model/HighChart'
 
-import * as assert from "assert"
-import { ITree } from '../../model/ITree'
-import { IChart } from '../../model/Chart'
+import {TreesService} from '../../service/trees.service'
 
-import { TreesService } from '../../service/trees.service';
-
-import { Chart } from 'angular-highcharts';
-
-import * as _ from 'lodash'
-import * as __ from '../../util'
+import {Chart} from 'angular-highcharts'
+import {InputLabel} from '../../model/types/Chart'
 
 @Component({
   selector: 'app-chart',
   template: `
 
-  <div class="graph-container">
-  <div [chart]=chart></div>
-  <app-chart-control
-  (indVarUpdated)="handleIndVarUpdated($event)"
-  (subVarUpdated)="handleSubVarUpdated($event)"
-  (toggleShowAllIndVar)="handleToggleIndVarShowAll($event)"
-  [indVar]=indVar [subVar]=subVar
-  [indVarShowAll]=indVarShowAll></app-chart-control>
-  </div>
-`
+    <div class="graph-container">
+      <div [chart]=chart></div>
+      <app-chart-control
+        (updateInput1)="onUpdateInput1($event)"
+        (updateInput2)="onUpdateInput2($event)"
+        (updateShowAll)="toggleShowAll($event)"
+        [input1]="input1" [input2]="input2"
+        [input1showAll]="input1showAll"></app-chart-control>
+    </div>
+  `
 })
-export class ChartComponent implements OnInit, OnChanges {
+export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() trees: ITree[]
   chartOptions: any = {}
   chart: any
 
+  input1: InputLabel
+  input2: InputLabel
 
-  indVar: string
-  subVar: string
-
-  indVarShowAll = true
+  input1showAll = false
 
   constructor(
     private treesService: TreesService ) {
-      this.indVar = 'commonName' // common name by default
-      this.subVar = null // no drilldown by default
+      this.input1 = 'commonName' // common name by default
+      this.input2 = null // no drilldown by default
   }
 
   ngOnInit() {
+    this._redrawChart()
   }
 
   ngOnChanges() {
     this._redrawChart()
   }
 
-  handleIndVarUpdated(indVar) {
-    this.indVar = indVar
+  ngOnDestroy() {
+  }
+
+  onUpdateInput1(newInput1) {
+    this.input1 = newInput1
     this._redrawChart()
   }
 
-  handleSubVarUpdated(subVar) {
-    this.subVar = subVar
+  onUpdateInput2(newInput2) {
+    this.input2 = newInput2
     this._redrawChart()
   }
 
-  handleToggleIndVarShowAll(showAll: boolean) {
-    this.indVarShowAll = showAll
-    if (showAll) { return this._redrawChart() }
-    const { indVar } = this
-
-    const popularKeys =
-    __.sortUniqs(this.trees, indVar)
-    .slice(0, 20)
-    .map(v => v[0])
-
-    const filteredData = this.trees.filter(t => popularKeys.includes(t[indVar]))
-    this.chartOptions = IChart(indVar, filteredData, this.subVar)
-    this.chart = new Chart(this.chartOptions)
+  toggleShowAll(showAll: boolean) {
+    this.input1showAll = showAll
+    this._redrawChart()
   }
 
   private _redrawChart() {
-    this.chartOptions = IChart(this.indVar, this.trees, this.subVar)
+    this.chartOptions = HighChart(this.trees, 20, this.input1, this.input2, this.input1showAll)
     this.chart = new Chart(this.chartOptions);
   }
+
+
 }

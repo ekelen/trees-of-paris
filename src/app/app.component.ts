@@ -8,7 +8,7 @@ import * as _ from 'lodash'
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Trees of Paris';
   params: any = {}
 

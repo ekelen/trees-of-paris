@@ -1,4 +1,4 @@
-export const Paris = {
+export const PARIS = {
   'centre_lat': 48.856617408019865,
   'min_lat': 48.81552560000005,
   'max_lng': 2.469760200000003,
