@@ -1,9 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
-var axios = require("axios")
-var moment = require("moment")
-var queryString = require("query-string")
 var ObjectID = mongodb.ObjectID;
 require('dotenv').config({ silent: process.env.NODE_ENV === 'production' })
 
@@ -52,7 +49,7 @@ function handleError(res, reason = "Server error.", message = reason, code) {
 }
 
 // MIDDLEWARE
-checkHeader = function (req, res, next) {
+const checkHeader = function (req, res, next) {
   if (!req.headers['x-auth']) return handleError(res, "You are not authorized.", null, 401)
   if (req.headers['x-auth'] !== process.env.ADMIN_KEY) return handleError(res, "You are not authorized.", null, 401)
   next()
@@ -85,7 +82,6 @@ app.get("/api/trees", async function(req, res) {
 });
 
 app.get("/api/trees/search", async (req, res) => {
-  // const queryStr = queryString.stringify(req.query)
   const { query } = req
   const dbQuery = new Search(query)
   const options = new Options(query)

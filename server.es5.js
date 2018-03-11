@@ -21,9 +21,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
-var axios = require("axios");
-var moment = require("moment");
-var queryString = require("query-string");
 var ObjectID = mongodb.ObjectID;
 require('dotenv').config({ silent: process.env.NODE_ENV === 'production' });
 
@@ -36,7 +33,6 @@ var request = require('request'),
     JSONStream = require('JSONStream'),
     es = require('event-stream');
 
-var treeData = "../assets/data/les-arbres.json";
 var treeSchema = require('./src/app/mongoose/Tree.js');
 
 var Trees = mongoose.model('Trees', treeSchema);
@@ -77,7 +73,7 @@ function handleError(res) {
 }
 
 // MIDDLEWARE
-checkHeader = function checkHeader(req, res, next) {
+var checkHeader = function checkHeader(req, res, next) {
   if (!req.headers['x-auth']) return handleError(res, "You are not authorized.", null, 401);
   if (req.headers['x-auth'] !== process.env.ADMIN_KEY) return handleError(res, "You are not authorized.", null, 401);
   next();
@@ -180,7 +176,6 @@ app.get("/api/trees/search", function () {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            // const queryStr = queryString.stringify(req.query)
             query = req.query;
             dbQuery = new Search(query);
             options = new Options(query);
@@ -324,7 +319,7 @@ var updateSpecial = function () {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
-            request({ url: 'http://localhost:8080/static/drilldownSerie/les-arbres.json' }).pipe(JSONStream.parse('*')).pipe(es.mapSync(function () {
+            request({ url: 'http://localhost:8080/static/drilldownSerie/lg/les-arbres.json' }).pipe(JSONStream.parse('*')).pipe(es.mapSync(function () {
               var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(t) {
                 return _regenerator2.default.wrap(function _callee6$(_context6) {
                   while (1) {
