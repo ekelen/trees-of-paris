@@ -1,6 +1,7 @@
 import {ITree} from './types/ITree'
 
 import {DGREEN1, LGREY1} from './constants/Style'
+import _ from 'lodash'
 
 import {
   DrilldownSeries,
@@ -35,11 +36,14 @@ class DataStore implements Store {
   public contInput1
   public contInput2
   public hasDrilldown
+  public showAll
 
-  constructor(public nBins: number, public input1: string, public input2: string) {
+  constructor(public nBins: number, public input1: string, public input2: string,
+              public showAllPref: boolean) {
     this.hasDrilldown = !!input2
     this.contInput1 = isContinuous(input1)
     this.contInput2 = isContinuous(input2)
+    this.showAll = !showAllPref && !isContinuous(input1) ? showAllPref : true
   }
 }
 
@@ -49,7 +53,7 @@ class Series extends DataStore {
   public seriePairs: Pair[]
 
   constructor(public trees, public store: Store, public isPrimary: boolean) {
-    super(store.nBins, store.input1, store.input2)
+    super(store.nBins, store.input1, store.input2, store.showAllPref)
     const input = isPrimary ? this.input1 : this.input2
     this.rawVals = rawBy(this.trees, input)
     this.rawPairs = <Pair[]>toCountPairs(this.rawVals, isNumVar(input))
@@ -99,8 +103,14 @@ class ChartTreeParser {
   drilldownSeries: DrilldownSeries[]
   config: DataStore
 
-  constructor(public trees, public nBins, public input1, public input2) {
-    this.config = new DataStore(nBins, input1, input2)
+  constructor(public trees, public nBins, public input1, public input2, public showAllPref) {
+    this.config = new DataStore(nBins, input1, input2, showAllPref)
+    if (!this.config.showAll) {
+      const popularVals = sortPairsByFrequency(toCountPairs(rawBy(trees, input1), isNumVar(input1)))
+        .map(p => x(p))
+        .slice(0, 19)
+      this.trees = this.trees.filter(t => popularVals.includes(t[input1]))
+    }
     this.primarySerie = null
     this.drilldownSeries = null
 
@@ -121,9 +131,9 @@ class ChartTreeParser {
   }
 }
 
-export function HighChart (trees: ITree[], nBins = 20, input1: string, input2?: string | null): any {
+export function HighChart (trees: ITree[], nBins = 20, input1: string, input2: string | null = null, input1showAll: boolean): any {
   console.time('HighChart')
-  const data = new ChartTreeParser(trees, nBins, input1, input2)
+  const data = new ChartTreeParser(trees, nBins, input1, input2, input1showAll)
   console.timeEnd('HighChart')
   return {
     chart: { type: 'column', backgroundColor: LGREY1 },

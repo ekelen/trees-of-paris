@@ -13,7 +13,7 @@ import * as G from 'geojson'
 import * as _ from 'lodash'
 import * as __ from '../util'
 
-const file = '../../assets/drilldownSerie/arrdts_v2.json'
+const file = '../../assets/data/arrdts_v2.json'
 const basePlaceUrl = 'https://maps.googleapis.com/maps/api/js'
 
 const center: [number, number] = [48.8566, 2.3522]

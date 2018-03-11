@@ -24,5 +24,6 @@ export type DrilldownSeriesData = Pair[]
 export interface Store {
   nBins: number,
   input1: InputLabel,
-  input2: InputLabel
+  input2: InputLabel,
+  showAllPref: boolean
 }

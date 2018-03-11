@@ -19,8 +19,8 @@ import {InputLabel} from '../../model/types/Chart'
           class="form-check-input"
           type="checkbox"
           name="inlineRadioOptions"
-          [checked]="primaryShowAll"
-          (click)="toggleIndVarShowAll($event)">Show All
+          [checked]="input1showAll"
+          (click)="toggleShowAll($event)">Show All
       </div>
 
       <div class="p-2">Drilldown by:</div>
@@ -43,11 +43,11 @@ export class ChartControlComponent implements OnInit, OnChanges {
 
   @Input() input1: InputLabel
   @Input() input2: InputLabel
-  @Input() primaryShowAll: boolean
+  @Input() input1showAll: boolean
 
-  @Output() updatePrimVar: EventEmitter<any> = new EventEmitter();
-  @Output() updateDrilldownVar: EventEmitter<any> = new EventEmitter();
-  @Output() filterShowAllPrimaryVar: EventEmitter<any> = new EventEmitter();
+  @Output() updateInput1: EventEmitter<any> = new EventEmitter();
+  @Output() updateInput2: EventEmitter<any> = new EventEmitter();
+  @Output() updateShowAll: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
@@ -61,18 +61,18 @@ export class ChartControlComponent implements OnInit, OnChanges {
   }
 
   onChangeIndvar(e) {
-    this.updatePrimVar.emit(e)
+    this.updateInput1.emit(e)
   }
 
   onChangeSubVar(e) {
-    this.updateDrilldownVar.emit(e)
+    this.updateInput2.emit(e)
   }
 
-  toggleIndVarShowAll = (e) => {
+  toggleShowAll = (e) => {
     e.target.disabled = "true"
     window.setTimeout(() => e.target.disabled = false, 1500);
     let showAll = e.target.checked
-    this.filterShowAllPrimaryVar.emit(showAll)
+    this.updateShowAll.emit(showAll)
   }
 
 }

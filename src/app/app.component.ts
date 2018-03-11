@@ -9,7 +9,7 @@ import * as _ from 'lodash'
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  title = 'Trees of PARIS';
+  title = 'Trees of Paris';
   params: any = {}
 
   constructor(

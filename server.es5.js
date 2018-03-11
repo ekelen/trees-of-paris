@@ -36,7 +36,7 @@ var request = require('request'),
     JSONStream = require('JSONStream'),
     es = require('event-stream');
 
-var treeData = "../assets/drilldownSerie/les-arbres.json";
+var treeData = "../assets/data/les-arbres.json";
 var treeSchema = require('./src/app/mongoose/Tree.js');
 
 var Trees = mongoose.model('Trees', treeSchema);
