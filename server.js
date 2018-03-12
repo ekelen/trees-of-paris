@@ -32,7 +32,7 @@ app.use(function(req, res, next) {
   let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
   console.time(`${req.method} ${req.originalUrl} from ${ip}`)
   next()
-}
+})
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -95,14 +95,17 @@ app.get("/api/trees/search", async (req, res) => {
   Trees.count(dbQuery, (err, count) => {
     if (err)
       return handleError(res, "Server error", err.message)
-    // if (count > 100000)
-    //   return handleError(res, "Too many results. Please narrow your query.")
     if (!count)
       return handleError(res, "No results found. Please broaden your query.")
-    Trees.find(dbQuery, {}, options)
+    let cursor = Trees.find(dbQuery, {}, options)
       .cursor()
-      .pipe(JSONStream.stringify())
+
+    cursor.pipe(JSONStream.stringify())
       .pipe(res.type('json'))
+    cursor.on('end', () => {
+      let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+      console.timeEnd(`${req.method} ${req.originalUrl} from ${ip}`)
+    })
   })
 });
 
