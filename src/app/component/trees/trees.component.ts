@@ -14,9 +14,9 @@ import {SearchKind} from '../../model/types/IParams'
   <app-loading *ngIf=treeService.loading></app-loading>
     <p *ngIf="!treeService.loading">There are {{trees.length}} valid trees
       <span *ngIf="hasCoords">within 250m of where you live. 
-        <span *ngIf="viewChart && hasCoords && trees.length" 
-              class="linkStyle" 
-              (click)="goClosest()">See more »</span>
+        <button *ngIf="viewChart && hasCoords && trees.length" 
+              class="ml-2 btn btn-success" 
+              (click)="goClosest()">See more »</button>
       </span>
       <span *ngIf="!hasCoords">in your arrondissement.</span>
       <span *ngIf="!trees.length" class="linkStyle">« Try new location</span></p>

@@ -89,4 +89,8 @@ h1, h2, h3, h4 {
   .home-jumbotron > p {
     display: none
   }
+
+  .select-option {
+    height: min-content;
+  }
 }
