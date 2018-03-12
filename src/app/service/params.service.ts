@@ -48,9 +48,7 @@ export class ParamsService {
   }
 
   changeSearchChoice = (searchChoice: string) => {
-    console.log('changing search preference')
     this._params$.next({...this._params, search_choice: SearchKind[searchChoice]})
-    console.log('search preference is now ', this._params.search_choice)
   }
 
   toggleConfirmed = (confirmedLocation: boolean) => {

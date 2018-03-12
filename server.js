@@ -55,28 +55,13 @@ function handleError(res, reason = "Server error.", message = reason, code) {
 }
 
 // MIDDLEWARE
-const checkHeader = function (req, res, next) {
+const checkAdmin = function (req, res, next) {
   if (!req.headers['x-auth']) return handleError(res, "You are not authorized.", null, 401)
   if (req.headers['x-auth'] !== process.env.ADMIN_KEY) return handleError(res, "You are not authorized.", null, 401)
   next()
 }
 
 // ROUTES
-app.get('/api/init', checkHeader, async function(req, res) {
-  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 180000)
-  const results = await addNew()
-  return res.json(results)
-})
-
-app.get('/api/fix_special', checkHeader, async function (req, res) {
-  setTimeout(() => {if (!res.headersSent) return res.send('Time out.')}, 180000)
-  const results = await updateSpecial()
-  return res.json(results)
-})
-
-app.get('/api/test_private', checkHeader, (req, res) => {
-  return res.json({message: 'You used the right header.'})
-})
 
 app.get("/api/trees", async function(req, res) {
   const { query } = req
@@ -176,48 +161,4 @@ function Options (query) {
       this[k] = Util.toNum(query[k])
     }
   }
-}
-
-
-
-const addNew = () => {
-  return new Promise(resolve => {
-    return request({url: 'http://localhost:8080/static/data/lg/les-arbres.json'})
-      .pipe(JSONStream.parse('*'))
-      .pipe(es.mapSync(async (t) => {
-        await Trees.create({
-          id: t.recordid,
-          species: t.fields.espece,
-          genus: t.fields.genre,
-          commonName: t.fields.libellefrancais,
-          street: t.fields.adresse.toLowerCase(),
-          arrondissement: parseInt(t.fields.arrondissement.split('').filter(c => c >= '0' && c <= '9').join('')),
-          geometry: t.geometry,
-          notable: !!(+t.fields.remarquable),
-          usage: t.fields.domanialite.toLowerCase(),
-          circumference: parseInt(t.fields.circonferenceencm),
-          height: parseInt(t.fields.hauteurenm)
-        })
-          .then(() => console.log("ok"))
-          .catch(err => {})
-      }))
-      .on('end', () => {
-        console.log('Sort of the end.')
-        resolve('finished')
-      })
-  })
-}
-
-const updateSpecial = async() => {
-  request({url: 'http://localhost:8080/static/data/lg/les-arbres.json'})
-    .pipe(JSONStream.parse('*'))
-    .pipe(es.mapSync(async (t) => {
-      await Trees.update(
-        {id: t.recordid},
-        {$set:{notable: !!(+t.fields.remarquable)}}
-      )
-        .then(() => console.log("ok"))
-        .catch(err => console.log(err.message))
-    }))
-    .then(() => ('This will not work, need request-promise.'))
 }
