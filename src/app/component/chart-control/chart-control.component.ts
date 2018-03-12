@@ -6,15 +6,16 @@ import {InputLabel} from '../../model/types/chartTypes'
 @Component({
   selector: 'app-chart-control',
   template: `
-    <div class="d-flex flex-row pt-2 mt-2">
+    <div class="d-flex flex-row flex-wrap pt-2 mt-2">
 
-      <div class="p-2">Input variable:</div>
+      <div class="p-2 d-flex flex-row">
+      <span class="p-2">Input variable:</span>
       <select class="p-2 select-option" [ngModel]="input1" (ngModelChange)="onChangeIndvar($event)"
               name="indVar">
         <option *ngFor="let i of input1opts" [value]=i>{{ i }}</option>
       </select>
 
-      <div class="form-check form-check-inline ml-1">
+      <div class="p-2 form-check form-check-inline ml-1">
         <input
           class="form-check-input"
           type="checkbox"
@@ -22,14 +23,17 @@ import {InputLabel} from '../../model/types/chartTypes'
           [checked]="input1showAll"
           (click)="toggleShowAll($event)">Show All
       </div>
+      </div>
 
-      <div class="p-2">Drilldown by:</div>
+      <div class="p-2 d-flex flex-row">
+        <span class="p-2">Drilldown by:</span>
       <select class="p-2 select-option" [ngModel]="input2" (ngModelChange)="onChangeSubVar($event)"
               name="subVar">
         <option *ngFor="let s of input2opts" [value]=s>{{ s }}</option>
       </select>
       <div *ngIf="input2" class="p-2 text-success">Click on any bar on the graph to drill down
         data!
+      </div>
       </div>
 
     </div>
