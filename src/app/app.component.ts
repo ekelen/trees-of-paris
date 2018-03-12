@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { MapService } from './service/map.service'
-import { ParamsService } from './service/params.service'
-
-import * as _ from 'lodash'
+import {Component, OnInit} from '@angular/core'
+import {ParamsService} from './service/params.service'
+import {IParams, SearchKind} from './model/types/IParams'
 
 @Component({
   selector: 'app-root',
@@ -10,14 +8,19 @@ import * as _ from 'lodash'
 })
 export class AppComponent implements OnInit {
   title = 'Trees of Paris';
-  params: any = {}
+  params: IParams = null
+  searchKind = SearchKind
 
   constructor(
-    public paramsService: ParamsService) {}
+    public paramsService: ParamsService) {
+    this.searchKind = SearchKind
+  }
 
   ngOnInit() {
     this.paramsService.params$.subscribe(
-      params => this.params = {...params}
+      params => {
+        this.params = {...params}
+      }
     )
   }
 

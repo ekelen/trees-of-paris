@@ -1,20 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Subject }    from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
+import {Injectable} from '@angular/core'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
+import {Observable} from 'rxjs/Observable'
 
 import * as _ from 'lodash'
-import {environment} from '../../environments/environment'
-
-export interface IParams {
-  first_visit: boolean;
-  user_arrdt: number;
-  user_coordinates: [number, number];
-  search_choice: string;
-  has_any_location: boolean;
-  confirmed_any_location: boolean;
-}
+import {IParams, SearchKind} from '../model/types/IParams'
 
 @Injectable()
 export class ParamsService {
@@ -23,8 +12,7 @@ export class ParamsService {
   params$: Observable<IParams>;
 
   constructor() {
-    this._params = environment.useMyTestData ?
-      environment.myTestParams : {
+    this._params = {
           first_visit: true,
           user_arrdt: 0,
           user_coordinates: null,
@@ -60,7 +48,9 @@ export class ParamsService {
   }
 
   changeSearchChoice = (searchChoice: string) => {
-    this._params$.next({...this._params, search_choice: searchChoice})
+    console.log('changing search preference')
+    this._params$.next({...this._params, search_choice: SearchKind[searchChoice]})
+    console.log('search preference is now ', this._params.search_choice)
   }
 
   toggleConfirmed = (confirmedLocation: boolean) => {
@@ -72,13 +62,11 @@ export class ParamsService {
   }
 
   get serverFriendlyParams() {
-    if (this._params.search_choice === "by_arrdt") {
+    if (this._params.search_choice === SearchKind.by_arrdt) {
       return {arrondissement: this._params.user_arrdt ? this._params.user_arrdt : ''}
-    }
-    else if (this._params.search_choice === "by_coordinates") {
+    } else if (this._params.search_choice === SearchKind.by_coordinates) {
         return {geometry: this._params.user_coordinates ? this._params.user_coordinates : '' }
-      }
-    else {
+    } else {
       return {}
     }
   }

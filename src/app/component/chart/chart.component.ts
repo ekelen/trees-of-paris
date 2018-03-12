@@ -5,7 +5,7 @@ import {HighChart} from '../../model/HighChart'
 import {TreesService} from '../../service/trees.service'
 
 import {Chart} from 'angular-highcharts'
-import {InputLabel} from '../../model/types/Chart'
+import {InputLabel} from '../../model/types/chartTypes'
 
 @Component({
   selector: 'app-chart',

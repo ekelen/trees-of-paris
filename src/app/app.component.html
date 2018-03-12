@@ -4,10 +4,10 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
-							<span class="navbar-text" *ngIf="params && params.has_any_location">
+							<span class="navbar-text" *ngIf="params && !!params.confirmed_any_location">
 								Your location:
-								<span *ngIf="params.search_choice === 'by_arrdt'">{{ params.user_arrdt }}me arrondissement</span>
-								<span *ngIf="params.search_choice === 'by_coordinates'">Within 250 m of [{{ params.user_coordinates[0] }}, {{params.user_coordinates[1] }}]</span>
+								<span *ngIf="params.search_choice === searchKind.by_arrdt">{{ params.user_arrdt }}me arrondissement</span>
+								<span *ngIf="params.search_choice === searchKind.by_coordinates">Within 250 m of [{{ params.user_coordinates[0] }}, {{params.user_coordinates[1] }}]</span>
 							</span>
 						</li>
 			      <li class="nav-item" *ngIf="params && params.has_any_location && params.confirmed_any_location">

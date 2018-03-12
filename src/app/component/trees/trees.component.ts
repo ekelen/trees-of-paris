@@ -1,16 +1,10 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core'
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core'
 
-import { TreesService } from '../../service/trees.service'
-import { MapService } from '../../service/map.service'
-import { LoadingComponent } from '../loading/loading.component'
-import { ParamsService, IParams } from '../../service/params.service'
+import {TreesService} from '../../service/trees.service'
+import {ParamsService} from '../../service/params.service'
 
-import { ITree } from '../../model/types/ITree'
-import { HighChart } from '../../model/HighChart'
-
-import * as _ from 'lodash'
-import * as __ from '../../util'
-import {BehaviorSubject} from 'rxjs/BehaviorSubject'
+import {ITree} from '../../model/types/ITree'
+import {SearchKind} from '../../model/types/IParams'
 
 @Component({
   selector: 'app-trees',
@@ -19,7 +13,11 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject'
   <div *ngIf="paramError" class="jumbotron">{{ errorMessage }}</div>
   <app-loading *ngIf=treeService.loading></app-loading>
     <p *ngIf="!treeService.loading">There are {{trees.length}} valid trees
-      <span *ngIf="hasCoords">within 250m of where you live. <span *ngIf="viewChart && hasCoords && trees.length" class="linkStyle" (click)="goClosest()">See more »</span></span>
+      <span *ngIf="hasCoords">within 250m of where you live. 
+        <span *ngIf="viewChart && hasCoords && trees.length" 
+              class="linkStyle" 
+              (click)="goClosest()">See more »</span>
+      </span>
       <span *ngIf="!hasCoords">in your arrondissement.</span>
       <span *ngIf="!trees.length" class="linkStyle">« Try new location</span></p>
   <app-explore-closest *ngIf="!treeService.loading && !noTreesFound && hasCoords && !viewChart" 
@@ -66,8 +64,8 @@ export class TreesComponent implements OnInit, AfterViewInit, OnDestroy {
 
     subs.push(paramsService.params$.subscribe(
       params => {
-        this.hasCoords = params.search_choice === 'by_coordinates' && !!params.user_coordinates
-        this.coordinates = params.user_coordinates
+        this.hasCoords = params.search_choice === SearchKind.by_coordinates && !!params.user_coordinates
+        if (this.hasCoords) this.coordinates = params.user_coordinates
       },
       err => {
         console.log(err.message)

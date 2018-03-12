@@ -10,7 +10,7 @@ import {
   PrimarySeriesData,
   X,
   Y
-} from './model/types/Chart'
+} from './model/types/chartTypes'
 import {CONTINUOUS_VARS, NUM_VARS} from './model/constants/Visualization'
 import {ITree} from './model/types/ITree'
 

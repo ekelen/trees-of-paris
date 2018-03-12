@@ -29,6 +29,12 @@ var app = express();
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
+  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  console.time(`${req.method} ${req.originalUrl} from ${ip}`)
+  next()
+}
+
+app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();

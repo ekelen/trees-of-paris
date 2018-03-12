@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core'
 
 import {INPUTS} from '../../model/constants/Visualization'
-import {InputLabel} from '../../model/types/Chart'
+import {InputLabel} from '../../model/types/chartTypes'
 
 @Component({
   selector: 'app-chart-control',
@@ -9,7 +9,7 @@ import {InputLabel} from '../../model/types/Chart'
     <div class="d-flex flex-row pt-2 mt-2">
 
       <div class="p-2">Input variable:</div>
-      <select class="p-2" [ngModel]="input1" (ngModelChange)="onChangeIndvar($event)"
+      <select class="p-2 select-option" [ngModel]="input1" (ngModelChange)="onChangeIndvar($event)"
               name="indVar">
         <option *ngFor="let i of input1opts" [value]=i>{{ i }}</option>
       </select>
@@ -24,7 +24,7 @@ import {InputLabel} from '../../model/types/Chart'
       </div>
 
       <div class="p-2">Drilldown by:</div>
-      <select class="p-2" [ngModel]="input2" (ngModelChange)="onChangeSubVar($event)"
+      <select class="p-2 select-option" [ngModel]="input2" (ngModelChange)="onChangeSubVar($event)"
               name="subVar">
         <option *ngFor="let s of input2opts" [value]=s>{{ s }}</option>
       </select>
