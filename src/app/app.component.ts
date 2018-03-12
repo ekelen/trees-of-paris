@@ -10,7 +10,6 @@ export class AppComponent implements OnInit {
   title = 'Trees of Paris';
   params: IParams = null
   searchKind = SearchKind
-  isCollapsed = true
 
   constructor(
     public paramsService: ParamsService) {
