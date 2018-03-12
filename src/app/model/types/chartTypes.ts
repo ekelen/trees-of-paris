@@ -21,7 +21,7 @@ export type DrilldownSeries = {
 }
 export type DrilldownSeriesData = Pair[]
 
-export interface Store {
+export interface ChartPrefs {
   nBins: number,
   input1: InputLabel,
   input2: InputLabel,

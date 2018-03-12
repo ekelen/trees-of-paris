@@ -1,4 +1,5 @@
-import {IParams} from '../app/service/params.service'
+import {IParams} from '../app/model/types/IParams'
+
 
 export const environment = {
   production: true,

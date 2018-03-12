@@ -1,20 +1,15 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subject }    from 'rxjs/Subject';
-import { BehaviorSubject }    from 'rxjs/BehaviorSubject';
+import {Injectable} from '@angular/core'
+import {HttpClient} from '@angular/common/http'
+import {Observable} from 'rxjs/Observable'
+import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 
-import { MAPBOX_API_KEY } from '../../environments/environment';
-import { ParamsService } from '../service/params.service'
+import {MAPBOX_API_KEY} from '../../environments/environment'
+import {ParamsService} from '../service/params.service'
 
 import * as L from 'leaflet'
-import * as G from 'geojson'
-
-import * as _ from 'lodash'
 import * as __ from '../util'
 
 const file = '../../assets/data/arrdts_v2.json'
-const basePlaceUrl = 'https://maps.googleapis.com/maps/api/js'
 
 const center: [number, number] = [48.8566, 2.3522]
 const zoom: number = 12

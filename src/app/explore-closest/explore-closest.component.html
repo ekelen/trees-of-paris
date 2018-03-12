@@ -3,7 +3,7 @@
     {{ errorMessage }}
   </p>
   <p>
-    The closest tree to you is {{ distanceClosestTree + 'm' }} away.
+    The closest tree to you is {{ distanceClosestTree + 'm' }} away. Here are the {{ closestTrees.length }} closest trees to you:
   </p>
   <div id="treeMap"></div>
   <span class="linkStyle" (click)="clickGoChart()">« Return to chart view</span>

@@ -1,4 +1,4 @@
-import {InputLabel} from '../types/Chart'
+import {InputLabel} from '../types/chartTypes'
 
 export const INPUTS: InputLabel[] = [
   'species', 'genus', 'commonName', 'fullName', 'street',

@@ -1,7 +1,6 @@
 import {ITree} from './types/ITree'
 
 import {DGREEN1, LGREY1} from './constants/Style'
-import _ from 'lodash'
 
 import {
   DrilldownSeries,
@@ -9,9 +8,9 @@ import {
   Pair,
   PrimarySeries,
   PrimarySeriesData,
-  Store,
+  ChartPrefs,
   X
-} from './types/Chart'
+} from './types/chartTypes'
 
 import {
   binnedPairs,
@@ -32,7 +31,7 @@ import {
 } from '../util'
 
 
-class DataStore implements Store {
+class DataStore implements ChartPrefs {
   public contInput1
   public contInput2
   public hasDrilldown
@@ -52,7 +51,7 @@ class Series extends DataStore {
   public rawPairs: Pair[]
   public seriePairs: Pair[]
 
-  constructor(public trees, public store: Store, public isPrimary: boolean) {
+  constructor(public trees, public store: ChartPrefs, public isPrimary: boolean) {
     super(store.nBins, store.input1, store.input2, store.showAllPref)
     const input = isPrimary ? this.input1 : this.input2
     this.rawVals = rawBy(this.trees, input)
@@ -77,7 +76,7 @@ class Primary extends Series {
   primarySerie: PrimarySeries
   ids: X[]
 
-  constructor(public trees: ITree[], public config: Store) {
+  constructor(public trees: ITree[], public config: ChartPrefs) {
     super(trees, config, true)
     const name = !this.hasDrilldown ? `Trees by ${this.input1}` : `Trees by ${this.input1} » ${this.input2}`
     const data: PrimarySeriesData[] = mapToPrimaryChart(this.seriePairs, this.input2)
@@ -92,7 +91,7 @@ class Primary extends Series {
 
 class DrillDown extends Series {
   drilldownSerie: DrilldownSeries
-  constructor(public trees: ITree[], public config: Store, id: X) {
+  constructor(public trees: ITree[], public config: ChartPrefs, id: X) {
     super(trees, config, false)
     this.drilldownSerie = mapToDrilldown(id, this.seriePairs)
   }
